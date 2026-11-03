@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content"
+    />
+    <title>NOEMA</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400..800;1,400..800&display=swap"
+    />
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"
+      onerror="
+        var s = document.createElement('script');
+        s.src = 'https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js';
+        document.head.appendChild(s);
+      "
+    ></script>
+    <link rel="stylesheet" href="src/css/00-tokens.css" />
+    <link rel="stylesheet" href="src/css/01-base.css" />
+    <link rel="stylesheet" href="src/css/02-layout.css" />
+    <link rel="stylesheet" href="src/css/03-nav-list.css" />
+    <link rel="stylesheet" href="src/css/04-editor.css" />
+    <link rel="stylesheet" href="src/css/05-zen.css" />
+    <link rel="stylesheet" href="src/css/06-overlays.css" />
+    <link rel="stylesheet" href="src/css/07-home.css" />
+    <link rel="stylesheet" href="src/css/08-onboarding.css" />
+    <link rel="stylesheet" href="src/css/09-states.css" />
+    <link rel="stylesheet" href="src/css/10-motion.css" />
+    <link rel="stylesheet" href="src/css/11-responsive.css" />
+  </head>
+  <body class="onb home">
+    <dialog id="sg" aria-label="Configurações">
+      <div class="sgw">
+        <div class="sgh">
+          <h2 class="dh">Configurações</h2>
+          <button class="gh" id="sgx">Fechar</button>
+        </div>
+        <div id="sgb"></div>
+      </div>
+    </dialog>
+    <dialog id="xd" aria-label="Exportar nota">
+      <div style="padding: 24px">
+        <h2 class="dh">Exportar nota</h2>
+        <p class="m" style="margin: 0 0 14px">
+          Todos os formatos guardam cor, negrito, itálico, sublinhado, grifo,
+          tamanho, capítulos e listas.
+        </p>
+        <div class="xl">
+          <button class="xo" data-fmt="pdf">
+            <b>PDF</b
+            ><span
+              >Cabeçalho NOEMA, rodapé com @dev-kauams e o autor do
+              perfil.</span
+            >
+          </button>
+          <button class="xo" data-fmt="txt">
+            <b>TXT</b
+            ><span
+              >Texto com marcas: **negrito**, _itálico_, {cor:#hex}...</span
+            >
+          </button>
+          <button class="xo" data-fmt="json">
+            <b>JSON</b
+            ><span>Cada trecho com todas as propriedades de formatação.</span>
+          </button>
+          <button class="xo" data-fmt="md">
+            <b>Markdown</b><span>Capítulos como ##, tópicos como ###.</span>
+          </button>
+        </div>
+        <div
+          id="xs"
+          class="m"
+          role="status"
+          aria-live="polite"
+          style="margin-top: 12px; min-height: 1.5em"
+        ></div>
+        <div style="margin-top: 8px">
+          <button class="gh" id="xcl">Fechar</button>
+        </div>
+      </div>
+    </dialog>
+    <dialog id="sd" aria-label="Espaços">
+      <div style="padding: 24px">
+        <h2 class="dh">Espaços</h2>
+        <p class="m" style="margin: 0 0 14px">
+          Separe suas notas por contexto. Remover um espaço não apaga as notas.
+        </p>
+        <div id="sl"></div>
+        <input
+          id="sn"
+          class="sni"
+          placeholder="Novo espaço e Enter"
+          maxlength="24"
+          aria-label="Novo espaço"
+        />
+        <div style="margin-top: 14px">
+          <button class="gh" id="sx">Fechar</button>
+        </div>
+      </div>
+    </dialog>
+    <div id="cp" class="pop" role="dialog" aria-label="Cor do texto" hidden>
+      <div class="sw"></div>
+      <input
+        id="hx"
+        placeholder="#a99aef e Enter"
+        maxlength="7"
+        spellcheck="false"
+        aria-label="Cor em hexadecimal"
+      />
+    </div>
+    <div id="ob" role="dialog" aria-modal="true" aria-label="Criar perfil">
+      <div id="ov"></div>
+    </div>
+    <canvas id="sk" aria-hidden="true"></canvas>
+    <div id="app">
+      <nav aria-label="Navegação">
+        <div class="logo">NOEMA</div>
+        <div id="nv"></div>
+        <h3>tags</h3>
+        <div id="tags"></div>
+        <h3>geral</h3>
+        <button id="bset"><span>Configurações</span></button>
+        <div id="sy" class="m" role="status"></div>
+      </nav>
+      <section id="lp" aria-label="Lista"></section>
+      <main id="ed" aria-label="Editor"></main>
+      <main id="hm" aria-label="Início"></main>
+    </div>
+    <dialog id="pal" aria-label="Comandos">
+      <input
+        id="pi"
+        placeholder="Buscar notas ou comandos…"
+        aria-label="Comando"
+      />
+      <div id="pl" role="listbox"></div>
+    </dialog>
+    <dialog id="dd">
+      <p style="margin: 16px">
+        Copie o conteúdo gerado ou cole um JSON do NOEMA para importar. A
+        importação só adiciona ou atualiza notas pelo id; nada é apagado.
+      </p>
+      <textarea id="dt" aria-label="Dados"></textarea>
+      <div style="display: flex; gap: 6px; padding: 10px 16px">
+        <button class="gh" id="xj">Gerar JSON de tudo</button
+        ><button class="gh" id="ij">Importar JSON colado</button
+        ><span style="flex: 1"></span><button class="gh" id="xc">Fechar</button>
+      </div>
+      <div
+        id="dm"
+        class="m"
+        style="padding: 0 16px 14px"
+        aria-live="polite"
+      ></div>
+    </dialog>
+    <script src="src/js/core/utils.js"></script>
+    <script src="src/js/core/state.js"></script>
+    <script src="src/js/core/motion.js"></script>
+    <script src="src/js/data/indexeddb.js"></script>
+    <script src="src/js/data/tasks.js"></script>
+    <script src="src/js/data/reminders.js"></script>
+    <script src="src/js/data/notes.js"></script>
+    <script src="src/js/data/autosave.js"></script>
+    <script src="src/js/data/profile.js"></script>
+    <script src="src/js/data/data-io.js"></script>
+    <!-- noema:config -->
+    <script src="src/js/sync/config.js"></script>
+    <script src="src/js/sync/auth.js"></script>
+    <script src="src/js/sync/firestore.js"></script>
+    <script src="src/js/sync/engine.js"></script>
+    <script src="src/js/features/filters.js"></script>
+    <script src="src/js/features/pdf.js"></script>
+    <script src="src/js/features/export.js"></script>
+    <script src="src/js/ui/nav.js"></script>
+    <script src="src/js/ui/list.js"></script>
+    <script src="src/js/ui/editor.js"></script>
+    <script src="src/js/ui/color-picker.js"></script>
+    <script src="src/js/ui/date-fields.js"></script>
+    <script src="src/js/ui/onboarding.js"></script>
+    <script src="src/js/ui/home.js"></script>
+    <script src="src/js/ui/tasks.js"></script>
+    <script src="src/js/ui/reminders.js"></script>
+    <script src="src/js/ui/spaces.js"></script>
+    <script src="src/js/ui/settings.js"></script>
+    <script src="src/js/ui/palette.js"></script>
+    <script src="src/js/ui/theme.js"></script>
+    <script src="src/js/ui/animations.js"></script>
+    <script src="src/js/ui/background.js"></script>
+    <script src="src/js/app/shortcuts.js"></script>
+    <script src="src/js/app/boot.js"></script>
+  </body>
+</html>
