@@ -1,0 +1,280 @@
+/* Estados interativos transversais: hover em itálico e item atual (valem para vários componentes, por isso carregam depois deles). */
+nav button:hover,
+.it:hover,
+.gh:hover,
+.tb button:hover,
+#pl button:hover,
+.fc:hover,
+#links button:hover,
+#ol button:hover,
+.obtn:hover {
+  background: none;
+  font-style: italic;
+  color: var(--fg);
+}
+nav button[aria-current="true"],
+.it[aria-current="true"] {
+  background: none;
+  color: var(--acc);
+  font-weight: 700;
+}
+.tasks-panel {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: clamp(22px, 6vw, 72px) clamp(18px, 5vw, 64px) 90px;
+}
+.tasks-head {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 18px;
+  margin-bottom: 18px;
+}
+.tasks-head h1 {
+  font-size: clamp(32px, 5vw, 58px);
+  line-height: 1;
+  margin: 7px 0 0;
+}
+.task-form {
+  border: 1px solid var(--line);
+  padding: 14px;
+  margin-bottom: 14px;
+  background: color-mix(in srgb, var(--bg) 72%, transparent);
+}
+.task-form input,
+.task-form textarea,
+.task-tools input,
+.task-tools select,
+.task-fields select,
+.task-fields input {
+  box-sizing: border-box;
+  width: 100%;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  background: transparent;
+  color: var(--fg);
+  font: inherit;
+  padding: 9px 2px;
+  outline: 0;
+}
+.task-form textarea {
+  min-height: 54px;
+  resize: vertical;
+  margin-top: 8px;
+}
+.task-fields,
+.task-tools {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-top: 10px;
+}
+.task-fields select,
+.task-fields input {
+  width: auto;
+  min-width: 130px;
+}
+.task-fields .gh {
+  margin-left: auto;
+}
+.task-tools {
+  margin-bottom: 10px;
+}
+.task-tools input {
+  flex: 1;
+}
+.task-tools select {
+  width: auto;
+}
+.task-list {
+  display: grid;
+  gap: 2px;
+}
+.task-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 13px 4px;
+  border-bottom: 1px solid var(--line);
+}
+.task-check,
+.task-fav,
+.task-remove {
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--fg);
+  width: 28px;
+  height: 28px;
+  flex: none;
+  padding: 0;
+  cursor: pointer;
+}
+.task-check[aria-pressed="true"] {
+  background: var(--acc);
+  border-color: var(--acc);
+  color: var(--bg);
+}
+.task-copy {
+  flex: 1;
+  min-width: 0;
+}
+.task-title {
+  border: 0;
+  background: transparent;
+  color: var(--fg);
+  font: inherit;
+  font-weight: 700;
+  padding: 3px 0;
+  text-align: left;
+  cursor: pointer;
+}
+.task-copy p {
+  margin: 5px 0;
+  color: var(--muted);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.task-row.is-done .task-title {
+  text-decoration: line-through;
+  color: var(--muted);
+}
+.task-fav,
+.task-remove {
+  border: 0;
+  font-size: 20px;
+}
+.task-remove {
+  font-size: 25px;
+  color: var(--muted);
+}
+.reminders-panel {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: clamp(22px, 6vw, 72px) clamp(18px, 5vw, 64px) 90px;
+}
+.reminders-head {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 18px;
+  margin-bottom: 18px;
+}
+.reminders-head h1 {
+  font-size: clamp(32px, 5vw, 58px);
+  line-height: 1;
+  margin: 7px 0 0;
+}
+.reminder-form {
+  border: 1px solid var(--line);
+  padding: 14px;
+  margin-bottom: 14px;
+  background: color-mix(in srgb, var(--bg) 72%, transparent);
+}
+.reminder-form input,
+.reminder-form textarea,
+.reminder-tools input,
+.reminder-tools select,
+.reminder-fields select,
+.reminder-fields input {
+  box-sizing: border-box;
+  width: 100%;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  background: transparent;
+  color: var(--fg);
+  font: inherit;
+  padding: 9px 2px;
+  outline: 0;
+}
+.reminder-form textarea {
+  min-height: 54px;
+  resize: vertical;
+  margin-top: 8px;
+}
+.reminder-fields,
+.reminder-tools {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-top: 10px;
+}
+.reminder-fields input,
+.reminder-fields select {
+  width: auto;
+  min-width: 130px;
+}
+.reminder-fields .gh {
+  margin-left: auto;
+}
+.reminder-tools {
+  margin-bottom: 18px;
+}
+.reminder-tools input {
+  flex: 1;
+}
+.reminder-tools select {
+  width: auto;
+}
+.reminder-toggle {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  white-space: nowrap;
+}
+.reminder-day h2 {
+  font-size: 14px;
+  text-transform: capitalize;
+  color: var(--muted);
+  font-weight: 500;
+  margin: 20px 0 5px;
+}
+.reminder-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 13px 4px;
+  border-bottom: 1px solid var(--line);
+}
+.reminder-priority {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  margin: 8px 3px 0;
+  flex: none;
+  background: var(--muted);
+}
+.priority-high {
+  background: #c0392b;
+}
+.priority-normal {
+  background: var(--acc);
+}
+.priority-low {
+  background: #4f8a69;
+}
+.reminder-copy {
+  flex: 1;
+  min-width: 0;
+}
+.reminder-title {
+  border: 0;
+  background: transparent;
+  color: var(--fg);
+  font: inherit;
+  font-weight: 700;
+  padding: 3px 0;
+  text-align: left;
+  cursor: pointer;
+}
+.reminder-copy p {
+  margin: 5px 0;
+  color: var(--muted);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.is-discarded .reminder-title {
+  text-decoration: line-through;
+  color: var(--muted);
+}

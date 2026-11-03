@@ -1,0 +1,192 @@
+/* Responsividade: todas as media queries, da mais genérica à mais específica. Vem por último de propósito. */
+@media (max-width: 800px) {
+  #app {
+    display: flex;
+    flex-direction: column;
+  }
+  nav {
+    display: flex;
+    overflow-x: auto;
+    gap: 2px;
+    padding: 8px;
+    flex: none;
+    border-bottom: 1px solid var(--line);
+  }
+  nav .logo,
+  nav h3,
+  #tags {
+    display: none;
+  }
+  nav button {
+    width: auto;
+    white-space: nowrap;
+    gap: 8px;
+  }
+  #lp {
+    flex: 1;
+    border: 0;
+    padding: 16px 12px;
+  }
+  body.ed #ed {
+    display: block;
+  }
+  .back {
+    display: inline-block;
+  }
+  .hg {
+    grid-template-columns: 1fr;
+  }
+  #hm {
+    grid-column: auto;
+    flex: 1;
+  }
+  #ed {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 5;
+    padding-top: calc(env(safe-area-inset-top, 0px) + 14px);
+    padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 80px);
+    background: var(--bg);
+  }
+}
+@media (min-width: 801px) {
+  body.zen #ed {
+    background: transparent;
+  }
+}
+@media (min-width: 1500px) {
+  #app {
+    grid-template-columns: 210px 360px 1fr;
+  }
+  #ed > * {
+    margin-inline: auto;
+  }
+}
+@media (max-width: 1100px) {
+  #app {
+    grid-template-columns: 150px 250px 1fr;
+  }
+  #ed {
+    padding-inline: clamp(18px, 3vw, 40px);
+  }
+}
+@media (min-width: 801px) and (max-width: 920px) {
+  #app {
+    grid-template-columns: 132px 224px 1fr;
+  }
+  nav {
+    padding-inline: 6px;
+  }
+  #lp {
+    padding-inline: 12px;
+  }
+}
+@media (max-height: 520px) {
+  .oq {
+    font-size: clamp(28px, 15vh, 96px);
+    padding: 1vh 0;
+  }
+  .oin,
+  .dtf {
+    font-size: clamp(24px, 11vh, 64px);
+  }
+  .oact {
+    margin-top: 12px;
+  }
+  .hi {
+    padding-top: 2vh;
+  }
+}
+@media (max-width: 380px) {
+  .oact {
+    gap: 18px;
+  }
+  .tiles {
+    grid-template-columns: 1fr;
+  }
+  .tb button {
+    min-width: 36px;
+    padding: 0 6px;
+  }
+}
+@media (pointer: coarse) {
+  .tb button {
+    min-width: 44px;
+    height: 44px;
+  }
+  nav button {
+    padding: 11px 10px;
+  }
+  .it {
+    padding: 14px 8px;
+  }
+  .fc {
+    padding: 9px 0;
+  }
+  .gh {
+    padding: 10px 12px;
+  }
+  .swb {
+    min-height: 34px;
+  }
+  #hx,
+  .fdi,
+  #tg,
+  #q,
+  #cap,
+  #pi,
+  #hcap,
+  .sni,
+  .sr input,
+  .sgf input {
+    font-size: 16px !important;
+  }
+}
+@media (max-width: 480px) {
+  .xl {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 600px) {
+  .tasks-panel,
+  .reminders-panel {
+    padding-inline: 14px;
+  }
+  .task-fields,
+  .reminder-fields {
+    flex-wrap: wrap;
+  }
+  .task-fields .gh,
+  .reminder-fields .gh {
+    margin-left: 0;
+  }
+  .task-fields select,
+  .task-fields input,
+  .reminder-fields select,
+  .reminder-fields input {
+    flex: 1;
+    min-width: 120px;
+  }
+  .task-tools,
+  .reminder-tools {
+    align-items: stretch;
+    flex-direction: column;
+  }
+  .task-tools select,
+  .reminder-tools select {
+    width: 100%;
+  }
+  .reminder-toggle {
+    align-self: flex-start;
+  }
+}
+@media (max-width: 480px) {
+  .sgf {
+    grid-template-columns: 1fr;
+  }
+  .sgr {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
