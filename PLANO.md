@@ -94,6 +94,10 @@ em IndexedDB, com item no menu navegação.
 
 ## Fase 3 — Calendário
 
+**Status:** concluída em 2026-11-04. A view mensal deriva tarefas e notas dos
+dados carregados, oferece navegação entre meses e revela os itens do dia
+selecionado.
+
 **Objetivo:** visão mensal do calendário com tarefas/notas agrupadas por dia.
 
 **Tarefas:**

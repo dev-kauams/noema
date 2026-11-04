@@ -21,6 +21,7 @@ const VIEWS = [
   ["trash", "Lixeira"],
   ["tasks", "Tarefas"],
   ["reminders", "Lembretes"],
+  ["calendar", "Calendário"],
 ];
 let prof = null,
   obTmp = {},
