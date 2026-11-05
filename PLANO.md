@@ -127,6 +127,9 @@ selecionado.
 
 ## Fase 4 — Grafo
 
+**Status:** implementada em 2026-11-04. O grafo deriva links de notas e
+dependências de tarefas, com zoom e abertura por clique.
+
 **Objetivo:** visualização relações entre tarefas (dependências, links de nota).
 
 **Tarefas:**
