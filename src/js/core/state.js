@@ -22,6 +22,7 @@ const VIEWS = [
   ["tasks", "Tarefas"],
   ["reminders", "Lembretes"],
   ["calendar", "Calendário"],
+  ["graph", "Grafo"],
 ];
 let prof = null,
   obTmp = {},

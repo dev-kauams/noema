@@ -5,17 +5,19 @@ function go(v) {
   tagF = null;
   document.body.classList.toggle(
     "home",
-    v == "home" || v == "tasks" || v == "reminders" || v == "calendar",
+    v == "home" || v == "tasks" || v == "reminders" || v == "calendar" || v == "graph",
   );
   document.body.classList.toggle("tasks", v == "tasks");
   document.body.classList.toggle("reminders", v == "reminders");
   document.body.classList.toggle("calendar", v == "calendar");
+  document.body.classList.toggle("graph", v == "graph");
   renderNav();
   renderList();
   if (v == "home") renderHome(true);
   else if (v == "tasks") renderTasks();
   else if (v == "reminders") renderReminders();
   else if (v == "calendar") renderCalendar();
+  else if (v == "graph") renderGraph();
   else animList();
 }
 // Desenha o menu: início, espaços (com contagem), visões e tags.
@@ -27,13 +29,15 @@ function renderNav() {
         ? reminders.filter((r) => r.active).length
         : v == "calendar"
           ? calendarItemsOn(calendarKey(new Date())).length
-        : (() => {
-            const o = view;
-            view = v;
-            const r = notes.filter(inV).length;
-            view = o;
-            return r;
-          })();
+          : v == "graph"
+            ? graphData().nodes.length
+          : (() => {
+              const o = view;
+              view = v;
+              const r = notes.filter(inV).length;
+              view = o;
+              return r;
+            })();
   $("#nv").innerHTML =
     navTop() +
     VIEWS.map(
