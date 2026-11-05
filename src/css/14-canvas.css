@@ -1,0 +1,50 @@
+#sketch {
+  width: min(94vw, 1080px);
+  max-width: none;
+  border: 1px solid var(--line);
+  background: var(--bg);
+  color: var(--fg);
+  padding: 0;
+}
+#sketch::backdrop {
+  background: rgba(15, 15, 15, .55);
+}
+.sketch-modal {
+  padding: 20px;
+}
+.sketch-modal header,
+.sketch-tools {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.sketch-modal header {
+  border-bottom: 1px solid var(--line);
+  justify-content: space-between;
+  padding-bottom: 12px;
+}
+.sketch-modal h2 {
+  margin: 0;
+}
+.sketch-tools {
+  flex-wrap: wrap;
+  padding: 12px 0;
+}
+.sketch-tools label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 12px;
+}
+.sketch-tools input[type="range"] {
+  width: 110px;
+}
+#sketch-board {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--line);
+  background: #fff;
+  touch-action: none;
+}

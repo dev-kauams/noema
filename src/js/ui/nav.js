@@ -77,6 +77,7 @@ $("#tags").onclick = (e) => {
     renderList();
   }
 };
+$("#bsk").onclick = openCanvas;
 function navTop() {
   const sp = (prof && prof.spaces) || [],
     cs = (s) =>
