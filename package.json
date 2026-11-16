@@ -1,0 +1,32 @@
+{
+  "name": "noema",
+  "version": "0.4.0",
+  "private": true,
+  "description": "NOEMA: sistema de pensamento, organização e memória digital (anotações, espaços, perfil, modo Zen).",
+  "type": "module",
+  "scripts": {
+    "check": "node scripts/check.mjs",
+    "build": "node scripts/build.mjs",
+    "docs": "node scripts/docs.mjs",
+    "test": "python3 tests/smoke.py",
+    "test:export": "python3 tests/export.py",
+    "tudo": "npm run check && npm run build && npm run docs",
+    "android:prepare": "node scripts/android.mjs",
+    "android:add": "npx cap add android",
+    "android:sync": "npm run android:prepare && npx cap sync android",
+    "android:open": "npx cap open android",
+    "android:apk": "cd android && ./gradlew assembleDebug",
+    "test:sync": "python3 tests/sync.py"
+  },
+  "dependencies": {
+    "@capacitor/core": "^7.0.0",
+    "@capacitor/android": "^7.0.0",
+    "@capacitor/filesystem": "^7.0.0",
+    "@capacitor/share": "^7.0.0",
+    "@capacitor-firebase/authentication": "^7.0.0",
+    "firebase": "^11.0.0"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^7.0.0"
+  }
+}

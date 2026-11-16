@@ -1,0 +1,6 @@
+noema.config.json
+android/
+dist-web/
+node_modules/
+*.log
+.DS_Store
