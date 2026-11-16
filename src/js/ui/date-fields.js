@@ -1,0 +1,7 @@
+/* Campo de data em três partes (dia, mês, ano) para o aniversário. */
+// Marcação dos três campos (dia, mês, ano) e de um input oculto #oi com o valor ISO.
+const dtHTML=()=>`<div class="dtf" role="group" aria-label="Data de nascimento"><input type="hidden" id="oi"><input id="dd1" class="oin" inputmode="numeric" maxlength="2" placeholder="dd" aria-label="Dia" autocomplete="bday-day"><b>/</b><input id="dd2" class="oin" inputmode="numeric" maxlength="2" placeholder="mm" aria-label="Mês" autocomplete="bday-month"><b>/</b><input id="dd3" class="oin y" inputmode="numeric" maxlength="4" placeholder="aaaa" aria-label="Ano" autocomplete="bday-year"></div>`;
+// Liga os campos: só dígitos, foco avança ao completar, Backspace volta, e só gera ISO se a data existe.
+function dtInit(h){const f=[...h.parentElement.querySelectorAll('input:not([type=hidden])')],[y0,m0,d0]=(h.value||'').split('-');if(y0){f[0].value=d0;f[1].value=m0;f[2].value=y0}
+ const sync=()=>{const d=+f[0].value,m=+f[1].value,y=+f[2].value,t=new Date(y,m-1,d),ok=f[0].value&&f[1].value&&f[2].value.length==4&&t.getFullYear()==y&&t.getMonth()==m-1&&t.getDate()==d;h.value=ok?`${String(y).padStart(4,'0')}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`:''};
+ f.forEach((x,i)=>{x.oninput=()=>{x.value=x.value.replace(/\D/g,'');if(x.value.length==x.maxLength&&f[i+1])f[i+1].focus();sync()};x.onkeydown=e=>{if(e.key=='Backspace'&&!x.value&&f[i-1]){f[i-1].focus();e.preventDefault()}}});sync()}
