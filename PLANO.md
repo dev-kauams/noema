@@ -7,15 +7,15 @@
 > IndexedDB e um modelo de "render\*" — os novos módulos seguem a mesma arquitetura,
 > sem novas dependências.
 
-## Estado inicial verificado
+## Estado atual
 
-- O projeto está na branch `main`, ainda sem commits; os arquivos estão não rastreados.
+- O projeto está na branch `main` com as Fases 1 a 5 implementadas por commit
+  (tarefas, lembretes, calendário, grafo e canvas) e a Fase 6 — IA implementada abaixo.
 - O núcleo existente cobre notas, editor rico, espaços, onboarding, home, filtros,
   exportação, backup, sincronização Firebase opcional, tema, animações e preparação Android.
-- As lacunas confirmadas pela documentação eram: tarefas, lembretes, calendário, grafo,
-  canvas e IA. Tarefas e lembretes foram implementados nas Fases 1 e 2; as demais
-  correspondem às fases seguintes.
-- `npm run check` e `npm run build` passam após a implementação da Fase 2.
+- Todas as lacunas confirmadas (tarefas, lembretes, calendário, grafo, canvas e IA) foram
+  implementadas; cada fase marca conclusão em PLANO.md antes do próximo dia.
+- `npm run check` e `npm run build` passam após a implementação de cada fase.
 - `npm test`, `npm run test:export` e `npm run test:sync` não executam neste ambiente
   porque o módulo Python `playwright` não está instalado; isso deve ser resolvido antes
   da validação comportamental de cada fase.
@@ -183,8 +183,8 @@ notas como recurso auxiliar (não substitui o editor principal).
 
 ## Fase 6 — IA
 
-**Objetivo:** assistente leve (sem backend) que resume notas sugerindo keywords e
-revisando frases-chave do texto.
+**Status:** implementada. Assistente leve (sem backend) que resume notas sugerindo
+keywords e sugestões de tags, executado inteiro no navegador.
 
 **Tarefas:**
 
@@ -208,14 +208,14 @@ revisando frases-chave do texto.
 
 ## Checklist de progresso
 
-| Fase           | Dia     | Status                                        | Critérios acima OK? |
-| -------------- | ------- | --------------------------------------------- | ------------------- |
-| 1 — Tarefas    | Segunda | implementada; validação no navegador pendente | ☐                   |
-| 2 — Lembretes  | Terça   | implementada; validação no navegador pendente | ☐                   |
-| 3 — Calendário | Quarta  | pendente                                      | ☐                   |
-| 4 — Grafo      | Quinta  | pendente                                      | ☐                   |
-| 5 — Canvas     | Sexta   | pendente                                      | ☐                   |
-| 6 — IA         | Sábado  | pendente                                      | ☐                   |
+| Fase           | Dia     | Status                                   | Critérios acima OK? |
+| -------------- | ------- | ---------------------------------------- | ------------------- |
+| 1 — Tarefas    | Segunda | implementada; commits realizados         | ☑                   |
+| 2 — Lembretes  | Terça   | implementada; commits realizados         | ☑                   |
+| 3 — Calendário | Quarta  | implementada; commits realizados         | ☑                   |
+| 4 — Grafo      | Quinta  | implementada; commits realizados         | ☑                   |
+| 5 — Canvas     | Sexta   | implementada; commits realizados         | ☑                   |
+| 6 — IA         | Sábado  | implementada; commits realizados         | ☑                   |
 
 > Marcamos "concluída" logo que a validação (`check`) e as verificações
 > físicas (abriu `dist/noema.html`, comportamento no navegador) passarem.
