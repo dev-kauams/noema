@@ -17,7 +17,10 @@ const calendarItemsOn = (dateKey) => [
       status: task.status,
     })),
   ...notes
-    .filter((note) => !note.trash && calendarKey(note.updated || note.created) == dateKey)
+    .filter(
+      (note) =>
+        !note.trash && calendarKey(note.updated || note.created) == dateKey,
+    )
     .map((note) => ({
       id: note.id,
       kind: "note",

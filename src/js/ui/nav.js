@@ -5,7 +5,11 @@ function go(v) {
   tagF = null;
   document.body.classList.toggle(
     "home",
-    v == "home" || v == "tasks" || v == "reminders" || v == "calendar" || v == "graph",
+    v == "home" ||
+      v == "tasks" ||
+      v == "reminders" ||
+      v == "calendar" ||
+      v == "graph",
   );
   document.body.classList.toggle("tasks", v == "tasks");
   document.body.classList.toggle("reminders", v == "reminders");
@@ -31,13 +35,13 @@ function renderNav() {
           ? calendarItemsOn(calendarKey(new Date())).length
           : v == "graph"
             ? graphData().nodes.length
-          : (() => {
-              const o = view;
-              view = v;
-              const r = notes.filter(inV).length;
-              view = o;
-              return r;
-            })();
+            : (() => {
+                const o = view;
+                view = v;
+                const r = notes.filter(inV).length;
+                view = o;
+                return r;
+              })();
   $("#nv").innerHTML =
     navTop() +
     VIEWS.map(

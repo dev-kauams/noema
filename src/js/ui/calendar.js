@@ -2,7 +2,9 @@ let calendarCursor = new Date();
 let calendarSelected = "";
 
 const calendarMonthLabel = (date) =>
-  new Intl.DateTimeFormat("pt-BR", { month: "long", year: "numeric" }).format(date);
+  new Intl.DateTimeFormat("pt-BR", { month: "long", year: "numeric" }).format(
+    date,
+  );
 
 const renderCalendar = () => {
   const year = calendarCursor.getFullYear();
@@ -14,7 +16,8 @@ const renderCalendar = () => {
   const selected = calendarSelected || today;
   const cells = [];
 
-  for (let i = 0; i < offset; i += 1) cells.push('<div class="calendar-day is-empty"></div>');
+  for (let i = 0; i < offset; i += 1)
+    cells.push('<div class="calendar-day is-empty"></div>');
   for (let day = 1; day <= days; day += 1) {
     const key = calendarKey(new Date(year, month, day));
     const items = calendarItemsOn(key);
@@ -41,10 +44,14 @@ $("#hm").onclick = (event) => {
     renderCalendar();
     return;
   }
-  const action = event.target.closest("[data-calendar-nav]")?.dataset.calendarNav;
+  const action = event.target.closest("[data-calendar-nav]")?.dataset
+    .calendarNav;
   if (!action) return;
   if (action == "today") calendarCursor = new Date();
-  else calendarCursor.setMonth(calendarCursor.getMonth() + (action == "next" ? 1 : -1));
+  else
+    calendarCursor.setMonth(
+      calendarCursor.getMonth() + (action == "next" ? 1 : -1),
+    );
   calendarSelected = "";
   renderCalendar();
 };

@@ -15,7 +15,7 @@
 .calendar-head h1 {
   margin: 5px 0 0;
   font-size: clamp(30px, 5vw, 56px);
-  line-height: .98;
+  line-height: 0.98;
   text-transform: capitalize;
 }
 .calendar-actions {
@@ -31,7 +31,7 @@
 .calendar-weekdays {
   color: var(--muted);
   font-size: 11px;
-  letter-spacing: .08em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   padding: 0 8px 8px;
 }

@@ -7,7 +7,7 @@
   padding: 0;
 }
 #sketch::backdrop {
-  background: rgba(15, 15, 15, .55);
+  background: rgba(15, 15, 15, 0.55);
 }
 .sketch-modal {
   padding: 20px;

@@ -15,7 +15,7 @@
 .graph-head h1 {
   margin: 5px 0 0;
   font-size: clamp(34px, 6vw, 64px);
-  line-height: .95;
+  line-height: 0.95;
 }
 .graph-actions {
   display: flex;
