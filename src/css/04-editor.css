@@ -1,0 +1,128 @@
+/* Editor rico: título, tags, barra de formatação, sumário, corpo e links. */
+.meta{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin-bottom:22px;
+}
+.meta .sp{
+  flex:1;
+}
+#tg{
+  width:100%;
+  border:0;
+  background:none;
+  padding:2px 0;
+  margin-bottom:14px;
+  outline:none;
+}
+.tb button{
+  min-width:40px;
+  height:36px;
+  background:none;
+  border:0;
+  border-radius:6px;
+  color:var(--mut);
+  white-space:nowrap;
+  padding:0 9px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  position:relative;
+}
+.tb button:hover{
+  background:var(--bg2);
+  color:var(--fg);
+}
+.tb i.v{
+  width:1px;
+  background:var(--line);
+  margin:6px 4px;
+}
+#ol{
+  margin-bottom:16px;
+}
+#ol button{
+  display:block;
+  background:none;
+  border:0;
+  color:var(--mut);
+  padding:2px 0;
+  text-align:left;
+}
+#ol button:hover{
+  color:var(--acc);
+}
+#ol .l2{
+  padding-left:18px;
+}
+#bo:empty::before{
+  content:attr(data-ph);
+  color:var(--mut);
+}
+#bo h1::before{
+  content:counter(cap) ". ";
+  color:var(--mut);
+  font-weight:400;
+}
+#bo p{
+  margin:0 0 .8em;
+}
+#links{
+  margin-top:40px;
+  padding-top:12px;
+  border-top:1px solid var(--line);
+}
+#links button{
+  background:none;
+  border:0;
+  color:var(--acc);
+  display:block;
+  padding:2px 0;
+  text-align:left;
+}
+.tb,.meta,.it,.gh{
+  transition:opacity .2s,background .15s,color .15s;
+}
+#bo{
+  outline:none;
+  min-height:50vh;
+  line-height:1.75;
+  counter-reset:cap;
+  overflow-wrap:anywhere;
+  font-size:18px;
+}
+#ti{
+  width:100%;
+  border:0;
+  background:none;
+  padding:0;
+  margin:0 0 8px;
+  outline:none;
+  font:700 clamp(40px,6.4vw,76px)/1.05 var(--d);
+  letter-spacing:-.035em;
+}
+#bo h1{
+  margin:1.8em 0 .4em;
+  counter-increment:cap;
+  font:700 1.9em/1.15 var(--d);
+  letter-spacing:-.025em;
+}
+#bo h2{
+  margin:1.4em 0 .3em;
+  font:600 1.2em/1.3 var(--d);
+}
+.tb{
+  display:flex;
+  gap:2px;
+  overflow-x:auto;
+  position:sticky;
+  top:0;
+  z-index:2;
+  border-bottom:1px solid var(--line);
+  margin-bottom:18px;
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:4px 6px;
+  background:color-mix(in srgb,var(--bg) 84%,transparent);
+}

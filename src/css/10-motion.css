@@ -1,0 +1,4 @@
+/* Transições de interface e chave global de animações. */
+[data-motion=off] *,[data-motion=off] *::before{
+  transition:none!important;
+}

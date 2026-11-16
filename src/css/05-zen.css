@@ -1,0 +1,57 @@
+/* Modo Zen: esconde a interface e centraliza o texto. */
+body.zen nav,body.zen #lp,body.zen #links,body.zen #ol,body.zen #wc,body.zen #tg,body.zen .back{
+  display:none;
+}
+body.zen #app{
+  display:block;
+}
+body.zen #ed{
+  position:fixed;
+  inset:0;
+  display:block;
+  padding:12vh 24px 120px;
+  background:var(--bg);
+  z-index:9;
+}
+body.zen #ed>*{
+  margin-inline:auto;
+}
+body.zen .meta{
+  position:fixed;
+  top:calc(env(safe-area-inset-top,0px) + 10px);
+  right:14px;
+  margin:0;
+  max-width:none;
+  opacity:.35;
+}
+body.zen .meta:hover{
+  opacity:1;
+}
+body.zen .meta>:not(#zn):not(#st){
+  display:none;
+}
+body.zen .tb{
+  position:fixed;
+  bottom:calc(env(safe-area-inset-bottom,0px) + 14px);
+  left:50%;
+  transform:translateX(-50%);
+  max-width:94vw;
+  width:max-content;
+  border:1px solid var(--line);
+  border-radius:10px;
+  opacity:.2;
+  margin:0;
+  padding:4px;
+}
+body.zen .tb:hover,body.zen .tb:focus-within{
+  opacity:1;
+}
+body.zen #ti{
+  text-align:center;
+}
+body.zen #sps{
+  display:none;
+}
+body.zen #hm{
+  display:none;
+}
