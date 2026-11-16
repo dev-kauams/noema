@@ -1,0 +1,4 @@
+{
+  "firebase": { "apiKey": "COLE_AQUI_A_API_KEY_DO_FIREBASE", "projectId": "SEU_PROJECT_ID" },
+  "googleWebClientId": "SEU_CLIENT_ID_WEB.apps.googleusercontent.com"
+}
