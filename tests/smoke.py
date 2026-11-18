@@ -7,7 +7,12 @@ pagina = (pathlib.Path(__file__).parent.parent / "dist/noema.html").resolve().as
 erros = []
 with sync_playwright() as p:
     nav = p.chromium.launch()
-    pg = nav.new_context(viewport={"width": 1280, "height": 800}).new_page()
+    # O app anima com GSAP; sem prefers-reduced-motion o Chromium headless perde o sincronismo
+    # de transição do onboarding (o #dd1 aparece antes de a animação terminar). Reduzir o
+    # movimento torna o teste determinístico — é o mesmo que o app respeitar no navegador.
+    pg = nav.new_context(
+        viewport={"width": 1280, "height": 800}, reduced_motion="reduce"
+    ).new_page()
     pg.on("pageerror", lambda e: erros.append(str(e)))
     pg.goto(pagina)
     pg.fill("#oi", "Ana"); pg.press("#oi", "Enter")                       # passo 1: nome
