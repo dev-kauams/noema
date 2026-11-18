@@ -1,0 +1,1811 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content"
+    />
+    <title>NOEMA</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400..800;1,400..800&display=swap"
+    />
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"
+      onerror="
+        var s = document.createElement('script');
+        s.src = 'https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js';
+        document.head.appendChild(s);
+      "
+    ></script>
+    <link rel="stylesheet" href="src/css/00-tokens.css" />
+    <link rel="stylesheet" href="src/css/01-base.css" />
+    <link rel="stylesheet" href="src/css/02-layout.css" />
+    <link rel="stylesheet" href="src/css/03-nav-list.css" />
+    <link rel="stylesheet" href="src/css/04-editor.css" />
+    <link rel="stylesheet" href="src/css/05-zen.css" />
+    <link rel="stylesheet" href="src/css/06-overlays.css" />
+    <link rel="stylesheet" href="src/css/07-home.css" />
+    <link rel="stylesheet" href="src/css/08-onboarding.css" />
+    <link rel="stylesheet" href="src/css/09-states.css" />
+    <link rel="stylesheet" href="src/css/10-motion.css" />
+    <link rel="stylesheet" href="src/css/11-responsive.css" />
+    <link rel="stylesheet" href="src/css/12-calendar.css" />
+    <link rel="stylesheet" href="src/css/13-graph.css" />
+    <link rel="stylesheet" href="src/css/14-canvas.css" />
+  </head>
+  <body class="onb home">
+    <dialog id="sg" aria-label="Configurações">
+      <div class="sgw">
+        <div class="sgh">
+          <h2 class="dh">Configurações</h2>
+          <button class="gh" id="sgx">Fechar</button>
+        </div>
+        <div id="sgb"></div>
+      </div>
+    </dialog>
+    <dialog id="xd" aria-label="Exportar nota">
+      <div style="padding: 24px">
+        <h2 class="dh">Exportar nota</h2>
+        <p class="m" style="margin: 0 0 14px">
+          Todos os formatos guardam cor, negrito, itálico, sublinhado, grifo,
+          tamanho, capítulos e listas.
+        </p>
+        <div class="xl">
+          <button class="xo" data-fmt="pdf">
+            <b>PDF</b
+            ><span
+              >Cabeçalho NOEMA, rodapé com @dev-kauams e o autor do
+              perfil.</span
+            >
+          </button>
+          <button class="xo" data-fmt="txt">
+            <b>TXT</b
+            ><span
+              >Texto com marcas: **negrito**, _itálico_, {cor:#hex}...</span
+            >
+          </button>
+          <button class="xo" data-fmt="json">
+            <b>JSON</b
+            ><span>Cada trecho com todas as propriedades de formatação.</span>
+          </button>
+          <button class="xo" data-fmt="md">
+            <b>Markdown</b><span>Capítulos como ##, tópicos como ###.</span>
+          </button>
+        </div>
+        <div
+          id="xs"
+          class="m"
+          role="status"
+          aria-live="polite"
+          style="margin-top: 12px; min-height: 1.5em"
+        ></div>
+        <div style="margin-top: 8px">
+          <button class="gh" id="xcl">Fechar</button>
+        </div>
+      </div>
+    </dialog>
+    <dialog id="sd" aria-label="Espaços">
+      <div style="padding: 24px">
+        <h2 class="dh">Espaços</h2>
+        <p class="m" style="margin: 0 0 14px">
+          Separe suas notas por contexto. Remover um espaço não apaga as notas.
+        </p>
+        <div id="sl"></div>
+        <input
+          id="sn"
+          class="sni"
+          placeholder="Novo espaço e Enter"
+          maxlength="24"
+          aria-label="Novo espaço"
+        />
+        <div style="margin-top: 14px">
+          <button class="gh" id="sx">Fechar</button>
+        </div>
+      </div>
+    </dialog>
+    <div id="cp" class="pop" role="dialog" aria-label="Cor do texto" hidden>
+      <div class="sw"></div>
+      <input
+        id="hx"
+        placeholder="#a99aef e Enter"
+        maxlength="7"
+        spellcheck="false"
+        aria-label="Cor em hexadecimal"
+      />
+    </div>
+    <div id="ob" role="dialog" aria-modal="true" aria-label="Criar perfil">
+      <div id="ov"></div>
+    </div>
+    <canvas id="sk" aria-hidden="true"></canvas>
+    <div id="app">
+      <nav aria-label="Navegação">
+        <div class="logo">NOEMA</div>
+        <div id="nv"></div>
+        <h3>tags</h3>
+        <div id="tags"></div>
+        <h3>geral</h3>
+        <button id="bsk"><span>Rascunho</span></button>
+        <button id="bset"><span>Configurações</span></button>
+        <div id="sy" class="m" role="status"></div>
+      </nav>
+      <section id="lp" aria-label="Lista"></section>
+      <main id="ed" aria-label="Editor"></main>
+      <main id="hm" aria-label="Início"></main>
+    </div>
+    <dialog id="pal" aria-label="Comandos">
+      <input
+        id="pi"
+        placeholder="Buscar notas ou comandos…"
+        aria-label="Comando"
+      />
+      <div id="pl" role="listbox"></div>
+    </dialog>
+    <dialog id="dd">
+      <p style="margin: 16px">
+        Copie o conteúdo gerado ou cole um JSON do NOEMA para importar. A
+        importação só adiciona ou atualiza notas pelo id; nada é apagado.
+      </p>
+      <textarea id="dt" aria-label="Dados"></textarea>
+      <div style="display: flex; gap: 6px; padding: 10px 16px">
+        <button class="gh" id="xj">Gerar JSON de tudo</button
+        ><button class="gh" id="ij">Importar JSON colado</button
+        ><span style="flex: 1"></span><button class="gh" id="xc">Fechar</button>
+      </div>
+      <div
+        id="dm"
+        class="m"
+        style="padding: 0 16px 14px"
+        aria-live="polite"
+      ></div>
+    </dialog>
+    <script>
+/* Funções puras e helpers de DOM: seletor, escape de HTML, sanitização, datas. */
+// Atalhos de DOM: $ = querySelector, $$ = querySelectorAll (já como array).
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+// Escapa HTML antes de pôr texto do usuário em innerHTML (evita XSS).
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+// Id estável e único de cada registro.
+const uid=()=>(crypto.randomUUID?crypto.randomUUID():Date.now().toString(36)+Math.random().toString(36).slice(2));
+const hm=()=>new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+// Sanitizador: remove script/style/iframe e atributos on*/javascript: do HTML salvo ou importado.
+function clean(h){const t=document.createElement('template');t.innerHTML=h||'';t.content.querySelectorAll('script,style,iframe,object,embed,link,meta,form').forEach(e=>e.remove());
+ t.content.querySelectorAll('*').forEach(e=>[...e.attributes].forEach(a=>{if(/^on/i.test(a.name)||/javascript:/i.test(a.value))e.removeAttribute(a.name)}));return t.innerHTML}
+// Data local de hoje em AAAA-MM-DD.
+const ymd=()=>{const t=new Date();return t.getFullYear()+'-'+String(t.getMonth()+1).padStart(2,'0')+'-'+String(t.getDate()).padStart(2,'0')};
+const isoToBr=s=>s?s.split('-').reverse().join('/'):'';
+// Converte dd/mm/aaaa em AAAA-MM-DD validando o calendário (31/02 é recusado).
+const brIso=s=>{const m=/^(\d\d)\/(\d\d)\/(\d{4})$/.exec(s);if(!m)return null;const d=new Date(+m[3],+m[2]-1,+m[1]);return d.getFullYear()==+m[3]&&d.getMonth()==+m[2]-1&&d.getDate()==+m[1]?`${m[3]}-${m[2]}-${m[1]}`:null};
+</script>
+    <script>
+/* Estado global do app (variáveis de módulo compartilhadas). */
+// Estado global: notas em memória, visão atual, nota aberta, busca e controle do autosave (timer, ver, saved).
+let db = null,
+  notes = [],
+  view = "home",
+  cur = null,
+  q = "",
+  tagF = null,
+  timer = 0,
+  ver = 0,
+  saved = 0,
+  delArm = false,
+  pIdx = 0,
+  lastR = null,
+  shown = [];
+const VIEWS = [
+  ["inbox", "Inbox"],
+  ["all", "Notas"],
+  ["fav", "Favoritas"],
+  ["archive", "Arquivo"],
+  ["trash", "Lixeira"],
+  ["tasks", "Tarefas"],
+  ["reminders", "Lembretes"],
+  ["calendar", "Calendário"],
+  ["graph", "Grafo"],
+];
+let prof = null,
+  obTmp = {},
+  obDone = false,
+  obEdit = false,
+  lastEd = null;
+let SP = null;
+</script>
+    <script>
+/* Preferência de movimento: sim / auto / não. Decide se GSAP e o fundo animam. */
+// Preferência de movimento: 'on' | 'auto' | 'off'.
+let motionPref='on';try{motionPref=localStorage.getItem('noema-motion')||'on'}catch(e){}
+// Movimento ligado? 'auto' respeita prefers-reduced-motion do sistema.
+const motionOn=()=>motionPref=='on'||(motionPref=='auto'&&!matchMedia('(prefers-reduced-motion:reduce)').matches);
+// GSAP só anima se carregou E o movimento está ligado.
+const anim=()=>!!window.gsap&&motionOn();
+function applyMotion(){document.documentElement.dataset.motion=motionOn()?'on':'off';}
+function setMotion(v){motionPref=v;try{localStorage.setItem('noema-motion',v)}catch(e){}applyMotion()}
+// Alterna sim -> auto -> não (usado pela paleta).
+const cycleMotion=()=>{setMotion(motionPref=='on'?'auto':motionPref=='auto'?'off':'on');if(typeof renderSettings=='function'&&$('#sg').open)renderSettings()};
+matchMedia('(prefers-reduced-motion:reduce)').addEventListener('change',applyMotion);applyMotion();
+</script>
+    <script>
+/* Camada de persistência: IndexedDB com promessas. */
+// Abre o banco 'noema' (object store 'notes'). Rejeita se o navegador não oferecer IndexedDB.
+const openDB = () =>
+  new Promise((res, rej) => {
+    try {
+      const r = indexedDB.open("noema", 3);
+      r.onupgradeneeded = () => {
+        if (!r.result.objectStoreNames.contains("notes"))
+          r.result.createObjectStore("notes", { keyPath: "id" });
+        if (!r.result.objectStoreNames.contains("tasks"))
+          r.result.createObjectStore("tasks", { keyPath: "id" });
+        if (!r.result.objectStoreNames.contains("reminders"))
+          r.result.createObjectStore("reminders", { keyPath: "id" });
+      };
+      r.onsuccess = () => res(r.result);
+      r.onerror = () => rej(r.error);
+    } catch (e) {
+      rej(e);
+    }
+  });
+// Executa uma operação numa transação; sem banco devolve vazio (modo só memória).
+const tx = (m, f, sn = "notes") =>
+  db
+    ? new Promise((res, rej) => {
+        const t = db.transaction(sn, m);
+        const r = f(t.objectStore(sn));
+        t.oncomplete = () => res(r && r.result);
+        t.onerror = t.onabort = () => rej(t.error);
+      })
+    : Promise.resolve([]);
+// Gravar e remover: só resolvem no 'oncomplete' da transação, ou seja, quando realmente persistiu.
+// Esvazia o banco local (usado ao sair da conta apagando os dados do aparelho).
+const clearAll = () =>
+  db
+    ? new Promise((res, rej) => {
+        const t = db.transaction(["notes", "tasks", "reminders"], "readwrite");
+        ["notes", "tasks", "reminders"].forEach((n) =>
+          t.objectStore(n).clear(),
+        );
+        t.oncomplete = () => res(true);
+        t.onerror = t.onabort = () => rej(t.error);
+      })
+    : Promise.resolve(true);
+const put = (n) => tx("readwrite", (s) => s.put(n)),
+  rm = (id) => tx("readwrite", (s) => s.delete(id)),
+  getAll = () => tx("readonly", (s) => s.getAll());
+// Salva e devolve true/false; nunca lança erro.
+const save = async (n) => {
+  try {
+    await put(n);
+    return true;
+  } catch (e) {
+    return false;
+  }
+};
+</script>
+    <script>
+/* Dados das tarefas: registros separados das notas, na mesma base local. */
+let tasks = [];
+const taskMk = (o) => ({
+  id: uid(),
+  title: "",
+  body: "",
+  status: "todo",
+  fav: false,
+  due: "",
+  created: Date.now(),
+  updated: Date.now(),
+  ...o,
+});
+const taskGetAll = () => tx("readonly", (s) => s.getAll(), "tasks");
+const taskPut = (t) => tx("readwrite", (s) => s.put(t), "tasks");
+const taskDelete = (id) => tx("readwrite", (s) => s.delete(id), "tasks");
+const taskSave = async (t) => {
+  try {
+    await taskPut(t);
+    return true;
+  } catch (e) {
+    return false;
+  }
+};
+const taskRemove = async (id) => {
+  try {
+    await taskDelete(id);
+    return true;
+  } catch (e) {
+    return false;
+  }
+};
+const matchT = (t, q = "", status = "all") => {
+  const x = q.trim().toLowerCase();
+  return (
+    (status == "all" || t.status == status) &&
+    (!x || (t.title + " " + t.body).toLowerCase().includes(x))
+  );
+};
+async function loadTasks() {
+  try {
+    tasks = await taskGetAll();
+    return tasks;
+  } catch (e) {
+    tasks = [];
+    return tasks;
+  }
+}
+</script>
+    <script>
+/* Dados dos lembretes: prazos locais, independentes de notas e tarefas. */
+let reminders = [];
+const reminderMk = (o) => ({
+  id: uid(),
+  title: "",
+  body: "",
+  date: ymd(),
+  priority: "normal",
+  active: true,
+  created: Date.now(),
+  updated: Date.now(),
+  ...o,
+});
+const reminderGetAll = () => tx("readonly", (s) => s.getAll(), "reminders");
+const reminderPut = (r) => tx("readwrite", (s) => s.put(r), "reminders");
+const reminderSave = async (r) => {
+  try {
+    await reminderPut(r);
+    return true;
+  } catch (e) {
+    return false;
+  }
+};
+const reminderFilter = (r, q = "", priority = "all", active = true) => {
+  const x = q.trim().toLowerCase();
+  return (
+    (!active || r.active) &&
+    (priority == "all" || r.priority == priority) &&
+    (!x || (r.title + " " + r.body).toLowerCase().includes(x))
+  );
+};
+async function loadReminders() {
+  try {
+    reminders = await reminderGetAll();
+    return reminders;
+  } catch (e) {
+    reminders = [];
+    return reminders;
+  }
+}
+</script>
+    <script>
+/* Itens do calendário derivados dos dados já carregados em memória. */
+const calendarKey = (value) => {
+  if (!value) return "";
+  if (typeof value === "string") return value.slice(0, 10);
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "";
+  return date.toISOString().slice(0, 10);
+};
+
+const calendarItemsOn = (dateKey) => [
+  ...tasks
+    .filter((task) => calendarKey(task.due) == dateKey)
+    .map((task) => ({
+      id: task.id,
+      kind: "task",
+      title: task.title || "Tarefa sem título",
+      status: task.status,
+    })),
+  ...notes
+    .filter(
+      (note) =>
+        !note.trash && calendarKey(note.updated || note.created) == dateKey,
+    )
+    .map((note) => ({
+      id: note.id,
+      kind: "note",
+      title: ttl(note),
+    })),
+];
+</script>
+    <script>
+const graphData = () => {
+  const nodes = [
+    ...notes
+      .filter((note) => !note.trash)
+      .map((note) => ({
+        id: `note:${note.id}`,
+        ref: note.id,
+        kind: "note",
+        title: ttl(note),
+      })),
+    ...tasks.map((task) => ({
+      id: `task:${task.id}`,
+      ref: task.id,
+      kind: "task",
+      title: task.title || "Tarefa sem título",
+    })),
+  ];
+  const edges = [];
+  notes
+    .filter((note) => !note.trash)
+    .forEach((note) => {
+      [...(note.body || "").matchAll(/\[\[([^\]\n]+)\]\]/g)].forEach(
+        (match) => {
+          const target = notes.find(
+            (candidate) =>
+              !candidate.trash &&
+              candidate.title.toLowerCase() == match[1].trim().toLowerCase(),
+          );
+          if (target)
+            edges.push({ from: `note:${note.id}`, to: `note:${target.id}` });
+        },
+      );
+    });
+  tasks.forEach((task) => {
+    const dependencies = Array.isArray(task.dependsOn) ? task.dependsOn : [];
+    dependencies.forEach((id) => {
+      if (tasks.some((candidate) => candidate.id == id))
+        edges.push({ from: `task:${task.id}`, to: `task:${id}` });
+    });
+  });
+  return { nodes, edges };
+};
+</script>
+    <script>
+/* Modelo de nota, visibilidade por visão e título de exibição. */
+// Fábrica de nota: todo registro nasce com todos os campos.
+const mk=o=>({id:uid(),title:'',body:'',html:'',space:'',tags:[],fav:false,arch:false,trash:false,inbox:false,created:Date.now(),updated:Date.now(),dirty:true,...o});
+// Regra única de visibilidade: espaço atual + visão (lixeira, arquivo, inbox, favoritas, notas).
+function inV(n){if(SP!==null&&n.space!==SP)return false;if(view=='trash')return n.trash;if(n.trash)return false;if(view=='archive')return n.arch;if(n.arch)return false;if(view=='inbox')return n.inbox;if(view=='fav')return n.fav;return !n.inbox}
+const ttl=n=>n.title||'Sem título';
+</script>
+    <script>
+/* Salvamento automático com estados reais (local, salvando, salvo, falha). */
+// Mostra o estado de salvamento na barra do editor.
+function setS(t,err){const s=$('#st');if(s){s.textContent=t;s.style.color=err?'#c0392b':''}}
+// Chamado a cada edição: sobe a versão e agenda o salvamento em 500 ms (debounce).
+function touch(){ver++;setS('Alterações locais…');clearTimeout(timer);timer=setTimeout(flush,500)}
+// Grava a nota. Só escreve 'Salvo' se nenhuma edição nova chegou durante a gravação (v == ver).
+async function flush(){clearTimeout(timer);timer=0;if(!cur||saved==ver)return;const v=ver,n=cur;n.updated=Date.now();n.dirty=true;setS('Salvando…');
+ if(!await save(n))return setS('Falha ao salvar: exporte seus dados e tente de novo',1);
+ if(v==ver){saved=v;setS(db?'Salvo às '+hm():'Só em memória: nada será mantido ao fechar',!db)}
+ renderNav();renderList();renderLinks();syncSoon()}
+</script>
+    <script>
+/* Perfil do usuário (nome, aniversário, espaços) no localStorage. */
+// Lê o perfil; garante a lista padrão de espaços.
+function loadProf(){try{prof=JSON.parse(localStorage.getItem('noema-profile'))}catch(e){prof=null}if(prof&&!Array.isArray(prof.spaces))prof.spaces=['Escola','Trabalho','Pessoal']}
+function paintProf(){const p=$('#bset');if(p)p.title=prof&&prof.name?'Configurações de '+fullName():'Configurações'}
+// Grava o perfil. Sem `keep`, carimba a edição (updated) e marca para envio à conta; com `keep`, só guarda (usado ao receber da nuvem).
+const persistProf=keep=>{if(prof&&!keep){prof.updated=Date.now();prof.dirty=true}try{localStorage.setItem('noema-profile',JSON.stringify(prof))}catch(e){}if(!keep&&typeof syncSoon=='function')syncSoon()};
+// Nome completo (nome + sobrenome): é o "autor" nas exportações.
+const fullName=()=>prof?[prof.name,prof.last].filter(Boolean).join(' '):'';
+</script>
+    <script>
+/* Backup: exportar e importar JSON com validação. */
+function openData(txt,msg){$('#dt').value=txt;$('#dm').textContent=msg||'';$('#dd').showModal();$('#dt').select()}
+$('#xj').onclick=()=>{$('#dt').value=JSON.stringify({app:'noema',v:2,notes},null,1);$('#dm').textContent=notes.length+' notas. Copie e guarde em um arquivo.';$('#dt').select()};
+$('#xc').onclick=()=>$('#dd').close();
+$('#ij').onclick=async()=>{let ok=0,bad=0;try{const j=JSON.parse($('#dt').value);if(!j||j.app!='noema'||!Array.isArray(j.notes))throw 0;
+ for(const r of j.notes){if(!r||typeof r.id!='string'||typeof r.body!='string'||!Array.isArray(r.tags)){bad++;continue}const n=mk({...r,html:clean(r.html),dirty:true});const i=notes.findIndex(x=>x.id==n.id);if(i>=0)notes[i]=n;else notes.push(n);if(await save(n))ok++;else bad++}
+ $('#dm').textContent=`Importadas: ${ok}. Com erro: ${bad}. Nada foi apagado.`;renderNav();renderList()}catch(e){$('#dm').textContent='JSON inválido: use um arquivo gerado pelo NOEMA.'}};
+</script>
+    
+    <script>
+/* Configuração de conta e sincronização (Firebase). Vazio = app 100% local.
+   Preencha noema.config.json (modelo: noema.config.example.json); o build injeta window.NOEMA_CONFIG antes deste arquivo. */
+const NOEMA_CFG=Object.assign({
+ firebase:{apiKey:'',projectId:''},     // Console Firebase > Configurações do projeto (a apiKey do Firebase não é segredo)
+ googleWebClientId:'',                  // ID de cliente OAuth do tipo "Web" (login Google no navegador)
+ authBase:'https://identitytoolkit.googleapis.com/v1',
+ tokenBase:'https://securetoken.googleapis.com/v1',
+ firestoreBase:'https://firestore.googleapis.com/v1'   // troque por http://localhost:8080/v1 para usar o emulador
+},window.NOEMA_CONFIG||{});
+// Há conta e sincronização configuradas nesta versão?
+const syncOn=()=>!!(NOEMA_CFG.firebase&&NOEMA_CFG.firebase.apiKey&&NOEMA_CFG.firebase.projectId);
+// Leitura/escrita de JSON no localStorage sem lançar erro.
+const lsGet=(k,d)=>{try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v)}catch(e){return d}};
+const lsSet=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
+</script>
+    <script>
+/* Autenticação via REST do Firebase Authentication (Identity Toolkit). Sem SDK: só fetch.
+   E-mail e senha funcionam em qualquer lugar; Google usa o plugin nativo no Android ou o Google Identity Services no navegador. */
+let SES=null;   // sessão: { uid, email, refresh, id, exp, provider }
+const AUTH_ERR={EMAIL_EXISTS:'Já existe uma conta com este e-mail. Toque em "Já tenho conta".',INVALID_LOGIN_CREDENTIALS:'E-mail ou senha incorretos.',INVALID_PASSWORD:'E-mail ou senha incorretos.',EMAIL_NOT_FOUND:'E-mail ou senha incorretos.',USER_DISABLED:'Esta conta foi desativada.',TOO_MANY_ATTEMPTS_TRY_LATER:'Muitas tentativas. Tente de novo em alguns minutos.',INVALID_EMAIL:'E-mail inválido.',MISSING_PASSWORD:'Digite a senha.',OPERATION_NOT_ALLOWED:'Este método de login não está ativado no Firebase.',GOOGLE_CANCELLED:'Login com Google cancelado.',GOOGLE_NO_TOKEN:'O Google não devolveu a credencial.'};
+// Mensagem em português para um erro técnico.
+function authMsg(m){m=String(m||'');if(m.startsWith('WEAK_PASSWORD'))return 'A senha precisa ter pelo menos 6 caracteres.';
+ if(/Failed to fetch|NetworkError|Load failed/i.test(m)||!navigator.onLine)return 'Sem conexão com a internet.';
+ return AUTH_ERR[m]||AUTH_ERR[m.split(' ')[0]]||'Não foi possível entrar ('+m+').'}
+async function authPost(path,body){const r=await fetch(`${NOEMA_CFG.authBase}/${path}?key=${encodeURIComponent(NOEMA_CFG.firebase.apiKey)}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+ const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error((j.error&&j.error.message)||'HTTP '+r.status);return j}
+// Guarda a sessão (no localStorage) com a hora em que o idToken expira.
+function setSession(j,provider){SES={uid:j.localId,email:j.email||(SES&&SES.email)||'',refresh:j.refreshToken,id:j.idToken,exp:Date.now()+(+j.expiresIn||3600)*1000,provider};lsSet('noema-session',SES);return SES}
+const loadSession=()=>{SES=lsGet('noema-session',null);if(SES&&!SES.uid)SES=null};
+function dropSession(){SES=null;try{localStorage.removeItem('noema-session')}catch(e){}}
+const signUpEmail=(email,pw)=>authPost('accounts:signUp',{email,password:pw,returnSecureToken:true}).then(j=>setSession(j,'password'));
+const signInEmail=(email,pw)=>authPost('accounts:signInWithPassword',{email,password:pw,returnSecureToken:true}).then(j=>setSession(j,'password'));
+const resetPassword=email=>authPost('accounts:sendOobCode',{requestType:'PASSWORD_RESET',email});
+// Troca a credencial do Google (idToken ou accessToken) por uma sessão do Firebase.
+const signInGoogleToken=t=>authPost('accounts:signInWithIdp',{postBody:(t.id?'id_token='+t.id:'access_token='+t.access)+'&providerId=google.com',requestUri:/^https?:/.test(location.origin)?location.origin:'http://localhost',returnIdpCredential:true,returnSecureToken:true}).then(j=>setSession(j,'google'));
+// idToken válido: renova com o refreshToken um minuto antes de vencer.
+async function freshToken(){if(!SES)throw new Error('SEM_SESSAO');if(Date.now()<SES.exp-60000)return SES.id;
+ const r=await fetch(`${NOEMA_CFG.tokenBase}/token?key=${encodeURIComponent(NOEMA_CFG.firebase.apiKey)}`,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:'grant_type=refresh_token&refresh_token='+encodeURIComponent(SES.refresh)});
+ const j=await r.json().catch(()=>({}));
+ if(!r.ok){const m=(j.error&&j.error.message)||'HTTP '+r.status;if(/TOKEN_EXPIRED|USER_DISABLED|USER_NOT_FOUND|INVALID_REFRESH_TOKEN/.test(m))dropSession();throw new Error(m)}
+ SES={...SES,id:j.id_token,refresh:j.refresh_token||SES.refresh,exp:Date.now()+(+j.expires_in||3600)*1000};lsSet('noema-session',SES);return SES.id}
+// ---- Google ----
+const nativeGoogle=()=>window.Capacitor&&Capacitor.Plugins&&Capacitor.Plugins.FirebaseAuthentication;
+const googleAvailable=()=>syncOn()&&!!(nativeGoogle()||NOEMA_CFG.googleWebClientId);
+const loadGsi=()=>window.google&&google.accounts?Promise.resolve():new Promise((ok,no)=>{const s=document.createElement('script');s.src='https://accounts.google.com/gsi/client';s.async=true;s.onload=ok;s.onerror=()=>no(new Error('Failed to fetch'));document.head.appendChild(s)});
+async function googleToken(){const P=nativeGoogle();
+ if(P){const r=await P.signInWithGoogle({skipNativeAuth:true}),c=r&&r.credential;if(!c||!(c.idToken||c.accessToken))throw new Error('GOOGLE_NO_TOKEN');return c.idToken?{id:c.idToken}:{access:c.accessToken}}
+ await loadGsi();
+ return new Promise((res,rej)=>google.accounts.oauth2.initTokenClient({client_id:NOEMA_CFG.googleWebClientId,scope:'openid email profile',
+  callback:r=>r.access_token?res({access:r.access_token}):rej(new Error('GOOGLE_CANCELLED')),error_callback:()=>rej(new Error('GOOGLE_CANCELLED'))}).requestAccessToken({prompt:'select_account'}))}
+const signInGoogle=async()=>signInGoogleToken(await googleToken());
+</script>
+    <script>
+/* Cliente REST do Cloud Firestore: codifica/decodifica valores e faz gravação em lote e consulta incremental.
+   Estrutura no banco:  users/{uid}/notes/{noteId}   e   users/{uid}/meta/profile   (regras em firebase/firestore.rules). */
+const fsDocs=()=>`projects/${NOEMA_CFG.firebase.projectId}/databases/(default)/documents`;
+// JS -> valor tipado do Firestore
+const fsEnc=v=>v===null||v===undefined?{nullValue:null}:typeof v=='boolean'?{booleanValue:v}:typeof v=='number'?{integerValue:String(Math.round(v))}:Array.isArray(v)?{arrayValue:{values:v.map(fsEnc)}}:{stringValue:String(v)};
+// valor tipado -> JS
+const fsDec=f=>f.stringValue!==undefined?f.stringValue:f.integerValue!==undefined?+f.integerValue:f.doubleValue!==undefined?f.doubleValue:f.booleanValue!==undefined?f.booleanValue:f.arrayValue?(f.arrayValue.values||[]).map(fsDec):null;
+const fsFields=o=>Object.fromEntries(Object.entries(o).map(([k,v])=>[k,fsEnc(v)]));
+const fsObj=d=>Object.fromEntries(Object.entries(d.fields||{}).map(([k,v])=>[k,fsDec(v)]));
+async function fsCall(path,opt){const tok=await freshToken();
+ const r=await fetch(`${NOEMA_CFG.firestoreBase}/${fsDocs()}${path}`,{...opt,headers:{'Authorization':'Bearer '+tok,'Content-Type':'application/json'}});
+ const j=await r.json().catch(()=>({}));if(!r.ok){const e=new Error((j.error&&(j.error.status||j.error.message))||'HTTP '+r.status);e.status=r.status;throw e}return j}
+// Grava (substitui) vários documentos de uma vez: items = [[coleção, id, objeto]].
+const fsCommit=(uid,items)=>fsCall(':commit',{method:'POST',body:JSON.stringify({writes:items.map(([col,id,obj])=>({update:{name:`${fsDocs()}/users/${uid}/${col}/${id}`,fields:fsFields(obj)}}))})});
+// Notas alteradas depois de `since` (campo updated), em ordem crescente, de 200 em 200.
+async function fsChanged(uid,since){const out=[];let s=since;
+ for(;;){const j=await fsCall(`/users/${uid}:runQuery`,{method:'POST',body:JSON.stringify({structuredQuery:{from:[{collectionId:'notes'}],where:{fieldFilter:{field:{fieldPath:'updated'},op:'GREATER_THAN',value:{integerValue:String(s)}}},orderBy:[{field:{fieldPath:'updated'},direction:'ASCENDING'}],limit:200}})});
+  const docs=j.filter(x=>x.document).map(x=>fsObj(x.document));out.push(...docs);if(docs.length<200)return out;s=docs[docs.length-1].updated}}
+// Perfil da conta (ou null se ainda não existe).
+async function fsGetProfile(uid){try{return fsObj(await fsCall(`/users/${uid}/meta/profile`,{method:'GET'}))}catch(e){if(e.status==404)return null;throw e}}
+</script>
+    <script>
+/* Motor de sincronização. Regra: ganha a edição mais recente de cada nota (campo updated).
+   Para não perder trabalho, se a nota mudou nos dois lados, a versão local vira uma "(cópia local)".
+   Local: IndexedDB (fonte da verdade offline). Nuvem: Firestore. Cada nota tem `dirty` = ainda não enviada. */
+const SYNC={state:'off',last:0,err:'',busy:false,timer:0,soon:0};
+const skey=k=>'noema-'+k+'-'+(SES?SES.uid:'');       // chaves por conta: cursor de leitura e exclusões pendentes
+const defaultSpaces=()=>['Escola','Trabalho','Pessoal'];
+// Quantas alterações ainda não chegaram à nuvem (notas, exclusões e perfil).
+const pendingCount=()=>SES?notes.filter(n=>n.dirty).length+lsGet(skey('tombs'),[]).length+(prof&&prof.dirty?1:0):0;
+function syncStatus(st,err){SYNC.state=st;SYNC.err=err||'';paintSync();if(typeof renderSettings=='function'&&$('#sg')&&$('#sg').open)renderSettings()}
+const hhmm=t=>new Date(t).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+const syncText=()=>({off:'Conectando…',idle:'Sincronizado'+(SYNC.last?' às '+hhmm(SYNC.last):'')+'.',busy:'Sincronizando…',offline:'Offline: '+pendingCount()+' alteração(ões) aguardando envio.',error:'Erro ao sincronizar: '+SYNC.err})[SYNC.state];
+function paintSync(){const t=$('#sy');if(t)t.textContent=!SES?'só neste aparelho':({idle:'nuvem: sincronizado',busy:'nuvem: sincronizando…',offline:'nuvem: offline',error:'nuvem: erro',off:'nuvem: conectando…'})[SYNC.state]}
+// Agenda uma sincronização (debounce); chamado após cada edição salva.
+function syncSoon(ms){if(!SES)return;clearTimeout(SYNC.soon);SYNC.soon=setTimeout(syncNow,ms===undefined?2500:ms)}
+const noteDoc=n=>({id:n.id,title:n.title,body:n.body,html:n.html,space:n.space,tags:n.tags,fav:n.fav,arch:n.arch,trash:n.trash,inbox:n.inbox,created:n.created,updated:n.updated,deleted:false});
+// Exclusão definitiva vira "lápide" na nuvem, para os outros aparelhos também apagarem.
+function syncTomb(id){if(!SES)return;const k=skey('tombs');lsSet(k,[...lsGet(k,[]),{id,t:Date.now()}]);syncSoon()}
+// Traz da nuvem o que mudou desde o último cursor.
+async function syncPull(){let changed=false;const since=lsGet(skey('pull'),0),rem=await fsChanged(SES.uid,since);let mx=since;
+ for(const r of rem){mx=Math.max(mx,r.updated||0);const i=notes.findIndex(n=>n.id==r.id),l=notes[i];
+  if(r.deleted){if(l&&!l.dirty){notes.splice(i,1);await rm(l.id).catch(()=>{});if(cur&&cur.id==l.id){cur=null;document.body.classList.remove('ed')}changed=true}continue}
+  if(l&&(l.updated>=r.updated||(cur&&cur.id==l.id&&ver!=saved)))continue;     // local mais novo, ou o usuário está digitando nela
+  if(l&&l.dirty&&(l.html!==r.html||l.title!==r.title)){const c=mk({...l,id:uid(),title:ttl(l)+' (cópia local)',updated:Date.now()});notes.push(c);await save(c)}
+  const n=mk({...r,html:clean(r.html||''),dirty:false});delete n.deleted;if(i>=0)notes[i]=n;else notes.push(n);await save(n);if(cur&&cur.id==n.id){cur=n;renderEd()}changed=true}
+ lsSet(skey('pull'),mx);
+ const rp=await fsGetProfile(SES.uid);
+ if(rp&&rp.name&&(rp.updated||0)>((prof&&prof.updated)||0)&&!(prof&&prof.dirty)){prof={...(prof||{}),name:rp.name,last:rp.last||'',bday:rp.bday||'',spaces:rp.spaces&&rp.spaces.length?rp.spaces:defaultSpaces(),updated:rp.updated,dirty:false};persistProf(true);paintProf();changed=true}
+ return changed}
+// Envia notas sujas, exclusões e o perfil, em lotes de 100. Só limpa `dirty` se a nota não mudou durante o envio.
+async function syncPush(){const d=notes.filter(n=>n.dirty),snap=d.map(n=>n.updated),t=lsGet(skey('tombs'),[]);
+ const items=[...d.map(n=>['notes',n.id,noteDoc(n)]),...t.map(x=>['notes',x.id,{id:x.id,deleted:true,updated:x.t,created:x.t,title:'',body:'',html:'',space:'',tags:[],fav:false,arch:false,trash:false,inbox:false}])];
+ if(prof&&prof.dirty&&prof.name)items.push(['meta','profile',{name:prof.name,last:prof.last||'',bday:prof.bday||'',spaces:prof.spaces||[],updated:prof.updated||Date.now()}]);
+ for(let i=0;i<items.length;i+=100)await fsCommit(SES.uid,items.slice(i,i+100));
+ for(let k=0;k<d.length;k++)if(d[k].updated===snap[k]){d[k].dirty=false;await save(d[k])}
+ if(t.length)lsSet(skey('tombs'),lsGet(skey('tombs'),[]).filter(x=>!t.some(y=>y.id==x.id&&y.t==x.t)));
+ if(prof&&prof.dirty){prof.dirty=false;persistProf(true)}}
+// Um ciclo completo: traz, depois envia. Nunca roda duas vezes ao mesmo tempo.
+async function syncNow(){if(!SES||SYNC.busy)return;if(!navigator.onLine){syncStatus('offline');return}
+ SYNC.busy=true;syncStatus('busy');
+ try{const ch=await syncPull();await syncPush();SYNC.last=Date.now();syncStatus('idle');if(ch){renderNav();renderList();if(view=='home')renderHome();if(!cur)renderEd()}}
+ catch(e){if(!SES)syncStatus('off');else syncStatus(navigator.onLine?'error':'offline',e&&e.message)}
+ SYNC.busy=false}
+function startSync(){if(!SYNC.timer)SYNC.timer=setInterval(syncNow,60000);if(SYNC.state=='off')syncStatus('off')}
+// Apaga as notas e o perfil deste aparelho (a nuvem não é tocada).
+async function wipeLocal(uid){notes=[];cur=null;prof=null;
+ try{localStorage.removeItem('noema-profile');if(uid)['pull','tombs'].forEach(k=>localStorage.removeItem('noema-'+k+'-'+uid))}catch(e){}
+ await clearAll().catch(()=>{});document.body.classList.remove('ed')}
+// Depois de entrar: separa contas diferentes no mesmo aparelho, adota o perfil da conta e começa a sincronizar.
+// Devolve true se a conta já tinha perfil.
+async function afterAuth(){const owner=lsGet('noema-owner',null);
+ if(owner&&owner!==SES.uid)await wipeLocal(owner);       // dados de OUTRA conta neste aparelho: nunca misturar
+ lsSet('noema-owner',SES.uid);
+ const rp=await fsGetProfile(SES.uid);
+ if(rp&&rp.name){prof={...(prof||{}),name:rp.name,last:rp.last||'',bday:rp.bday||'',spaces:rp.spaces&&rp.spaces.length?rp.spaces:defaultSpaces(),updated:rp.updated||0,dirty:false};persistProf(true)}
+ else if(prof&&prof.name){prof.dirty=true;persistProf(true)}        // perfil local sobe para a conta
+ startSync();syncSoon(300);return !!(rp&&rp.name)}
+// Sair: opcionalmente apaga os dados deste aparelho.
+async function logout(wipe){const uid=SES&&SES.uid;clearTimeout(SYNC.soon);clearInterval(SYNC.timer);SYNC.timer=0;dropSession();
+ if(wipe){await wipeLocal(uid);try{localStorage.removeItem('noema-owner')}catch(e){}}
+ SYNC.state='off';paintSync()}
+addEventListener('online',()=>syncSoon(500));
+addEventListener('offline',()=>{if(SES)syncStatus('offline')});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)syncSoon(500)});
+</script>
+    <script>
+/* Filtros combináveis: tags, período, favoritas, ordenação. */
+// Estado padrão dos filtros.
+const F0=()=>({tags:[],range:'any',from:'',to:'',by:'updated',fav:false,un:false,sort:'updated'});
+let F=F0(),fOpen=false;
+const fn=()=>F.tags.length+(F.range!='any'?1:0)+((F.from||F.to)?1:0)+(F.fav?1:0)+(F.un?1:0);
+// Filtro de uma nota: tags (todas), sem tags, favoritas e período (por data de edição ou criação).
+function matchF(n){if(F.tags.length&&!F.tags.every(t=>n.tags.includes(t)))return false;if(F.un&&n.tags.length)return false;if(F.fav&&!n.fav)return false;
+ const t=n[F.by],d=new Date(),s0=new Date(d.getFullYear(),d.getMonth(),d.getDate()).getTime(),day=864e5;
+ const lo={today:s0,'7':s0-6*day,'30':s0-29*day,year:new Date(d.getFullYear(),0,1).getTime()}[F.range];
+ if(lo!==undefined&&t<lo)return false;if(F.from&&t<new Date(F.from+'T00:00:00').getTime())return false;
+ if(F.to&&t>=new Date(F.to+'T00:00:00').getTime()+day)return false;return true}
+const sortF=(a,b)=>F.sort=='old'?a.updated-b.updated:F.sort=='title'?ttl(a).localeCompare(ttl(b),'pt-BR'):F.sort=='created'?b.created-a.created:b.updated-a.updated;
+function fpHTML(){const t={};notes.filter(n=>!n.trash).forEach(n=>n.tags.forEach(x=>t[x]=(t[x]||0)+1));
+ const c=(k,x,l,on)=>`<button class="fc" data-f="${k}" data-x="${esc(x)}" aria-pressed="${on}">${l}</button>`;
+ const tg=Object.keys(t).sort().map(x=>c('tag',x,'#'+esc(x)+' '+t[x],F.tags.includes(x))).join('')||'<span class="m">nenhuma tag ainda</span>';
+ return `<div class="fp"><div class="m">tags (todas as marcadas)</div><div class="fr">${tg}</div>
+ <div class="m">período</div><div class="fr">${[['any','Tudo'],['today','Hoje'],['7','7 dias'],['30','30 dias'],['year','Este ano']].map(([v,l])=>c('range',v,l,F.range==v&&!F.from&&!F.to)).join('')}</div>
+ <div class="fr" style="margin-top:6px"><label class="m">de<input class="fdi" id="fd1" inputmode="numeric" maxlength="10" placeholder="dd/mm/aaaa" aria-label="Data inicial" value="${isoToBr(F.from)}"></label><label class="m">até<input class="fdi" id="fd2" inputmode="numeric" maxlength="10" placeholder="dd/mm/aaaa" aria-label="Data final" value="${isoToBr(F.to)}"></label></div>
+ <div class="m">data considerada</div><div class="fr">${c('by','updated','Edição',F.by=='updated')}${c('by','created','Criação',F.by=='created')}</div>
+ <div class="m">mostrar</div><div class="fr">${c('fav','','Favoritas',F.fav)}${c('un','','Sem tags',F.un)}</div>
+ <div class="m">ordem</div><div class="fr">${[['updated','Recentes'],['old','Antigas'],['created','Criação'],['title','Título']].map(([v,l])=>c('sort',v,l,F.sort==v)).join('')}</div>
+ <div class="fr" style="margin-top:12px"><button class="gh" data-f="clear" data-x="">Limpar filtros</button></div></div>`}
+$('#lp').addEventListener('click',e=>{const b=e.target.closest('[data-f]');if(!b)return;const k=b.dataset.f,v=b.dataset.x;
+ if(k=='open')fOpen=!fOpen;else if(k=='tag'){F.tags=F.tags.includes(v)?F.tags.filter(x=>x!=v):[...F.tags,v];F.un=false}
+ else if(k=='range'){F.range=v;F.from=F.to=''}else if(k=='by')F.by=v;else if(k=='fav')F.fav=!F.fav;
+ else if(k=='un'){F.un=!F.un;if(F.un)F.tags=[]}else if(k=='sort')F.sort=v;else if(k=='clear')F=F0();
+ renderNav();renderList()});
+$('#lp').addEventListener('input',e=>{const t=e.target;if(t.id!='fd1'&&t.id!='fd2')return;const d=t.value.replace(/\D/g,'').slice(0,8);t.value=d.length>4?d.slice(0,2)+'/'+d.slice(2,4)+'/'+d.slice(4):d.length>2?d.slice(0,2)+'/'+d.slice(2):d;
+ const k=t.id=='fd1'?'from':'to',iso=t.value?brIso(t.value):'';if(iso===null||iso===F[k])return;F[k]=iso;F.range='any';const id=t.id;renderList();const n=$('#'+id);if(n){n.focus();n.setSelectionRange(n.value.length,n.value.length)}});
+</script>
+    <script>
+/* Gerador de PDF próprio, sem bibliotecas: PDF 1.4, fontes padrão Helvetica (4 estilos), codificação WinAnsi.
+   Entrada: { app, author, handle, title, meta[], blocks[] } (blocos vêm de noteBlocks em export.js). Saída: Uint8Array. */
+const PDF_W=595.28,PDF_H=841.89,PDF_M=60;
+const PDF_WIN={'€':128,'‚':130,'ƒ':131,'„':132,'…':133,'†':134,'‡':135,'ˆ':136,'‰':137,'Š':138,'‹':139,'Œ':140,'Ž':142,'‘':145,'’':146,'“':147,'”':148,'•':149,'–':150,'—':151,'˜':152,'™':153,'š':154,'›':155,'œ':156,'ž':158,'Ÿ':159};
+let pdfLost=0,pdfCtx=null;
+// números curtos no PDF (2 casas) e escape de texto
+const pdfF=n=>String(Math.round(n*100)/100);
+const pdfEsc=s=>s.replace(/[\\()]/g,'\\$&');
+const pdfRG=c=>c.map(v=>pdfF(v/255)).join(' ');
+// converte para WinAnsi; o que não existe nessa tabela (emoji, CJK...) vira '?' e é contado em pdfLost
+function pdfLatin(s){let o='';for(const ch of s){const c=ch.codePointAt(0);
+ if(c==160)o+=' ';else if(c==9)o+='    ';else if(c==10||c==13)continue;else if(c>=32&&c<127||c>=161&&c<=255)o+=ch;else if(PDF_WIN[ch])o+=String.fromCharCode(PDF_WIN[ch]);else{o+='?';pdfLost++}}return o}
+// largura de texto: Arial/Helvetica têm as mesmas métricas; mede-se num canvas a 100px e escala-se
+function pdfMeasure(t,size,b,i){if(!pdfCtx)pdfCtx=document.createElement('canvas').getContext('2d');
+ pdfCtx.font=(i?'italic ':'')+(b?'bold ':'')+'100px Arial, Helvetica, sans-serif';return pdfCtx.measureText(t).width*size/100}
+// quebra de linha: transforma runs (trechos com estilo) em linhas que cabem em `avail` pontos
+function pdfLines(runs,base,avail,boldAll,col0){
+ const tk=[];
+ for(const r of runs){const size=base*(r.fontSize&&!boldAll?r.fontSize/18:1),b=boldAll||r.bold,it=!!r.italic;
+  for(const p of String(r.text).split(/(\n|\s+)/)){if(p==='')continue;
+   if(p=='\n'){tk.push({br:1});continue}
+   const sp=/^\s+$/.test(p),t=sp?' ':pdfLatin(p);
+   tk.push({t,sp,size,b,i:it,u:r.underline,s:r.strike,col:r.color||col0,bg:r.background,w:pdfMeasure(t,size,b,it)})}}
+ const lines=[];let L={tk:[],w:0};
+ const push=()=>{while(L.tk.length&&L.tk[L.tk.length-1].sp)L.w-=L.tk.pop().w;lines.push(L);L={tk:[],w:0}};
+ for(const k of tk){if(k.br){push();continue}
+  if(k.sp&&!L.tk.length)continue;
+  if(!k.sp&&L.w+k.w>avail&&L.tk.length)push();
+  if(!k.sp&&k.w>avail){let s=[...k.t];   // palavra maior que a linha: quebra por caracteres
+   while(s.length){let n=s.length;while(n>1&&pdfMeasure(s.slice(0,n).join(''),k.size,k.b,k.i)>avail-L.w)n--;
+    const part=s.splice(0,n).join(''),w=pdfMeasure(part,k.size,k.b,k.i);L.tk.push({...k,t:part,w});L.w+=w;if(s.length)push()}continue}
+  L.tk.push(k);L.w+=k.w}
+ push();return lines}
+// desenha uma linha: fundo (grifo), texto, sublinhado e tachado, trecho a trecho
+function pdfDrawLine(L,x,base){let o='';
+ for(const k of L.tk){
+  if(k.bg)o+=`${pdfRG(k.bg)} rg ${pdfF(x)} ${pdfF(base-k.size*.25)} ${pdfF(k.w)} ${pdfF(k.size*1.2)} re f\n`;
+  if(!k.sp&&k.t)o+=`BT /F${1+(k.b?1:0)+(k.i?2:0)} ${pdfF(k.size)} Tf ${pdfRG(k.col)} rg ${pdfF(x)} ${pdfF(base)} Td (${pdfEsc(k.t)}) Tj ET\n`;
+  for(const [on,dy] of [[k.u,-k.size*.12],[k.s,k.size*.3]])if(on&&!k.sp)o+=`${pdfRG(k.col)} RG ${pdfF(k.size*.06)} w ${pdfF(x)} ${pdfF(base+dy)} m ${pdfF(x+k.w)} ${pdfF(base+dy)} l S\n`;
+  x+=k.w}
+ return o}
+function pdfBuild(d){
+ pdfLost=0;const TXT=[26,26,26],GRY=[120,120,120],pages=[],top=PDF_H-96,bot=86,W=PDF_W-2*PDF_M;let y=top;
+ const np=()=>{pages.push('');y=top};np();
+ // um bloco = vários parágrafos visuais; `ind` recuo, `before/after` espaços, `lead` marcador (• ou 1.)
+ const block=(runs,o)=>{const base=o.size,ind=o.ind||0,lines=pdfLines(runs,base,W-ind,o.bold,o.col||TXT);
+  if(!lines.length)lines.push({tk:[],w:0});
+  y-=o.before||0;
+  lines.forEach((L,n)=>{const ms=Math.max(base,...L.tk.map(k=>k.size)),lh=ms*1.4;
+   if(y-lh<bot){np()}
+   const bl=y-ms*.95;
+   if(n==0&&o.lead)pages[pages.length-1]+=pdfDrawLine({tk:[{t:pdfLatin(o.lead),size:base,b:o.bold,i:false,col:o.col||TXT,w:0}]},PDF_M+ind-16,bl);
+   pages[pages.length-1]+=pdfDrawLine(L,PDF_M+ind,bl);y-=lh});
+  y-=o.after||0};
+ block([{text:d.title||'Sem título'}],{size:26,bold:true,after:4});
+ for(const m of d.meta)block([{text:m,color:GRY}],{size:9.5,after:1});
+ pages[0]+=`0.5 w 0.8 G ${pdfF(PDF_M)} ${pdfF(y-6)} m ${pdfF(PDF_W-PDF_M)} ${pdfF(y-6)} l S\n`;y-=14;
+ for(const b of d.blocks){
+  if(b.type=='h1')block([{text:b.num+'. '},...b.runs],{size:20,bold:true,before:16,after:6});
+  else if(b.type=='h2')block(b.runs,{size:15,bold:true,before:10,after:4});
+  else if(b.type=='h3')block(b.runs,{size:12.5,bold:true,before:8,after:3});
+  else if(b.type=='li')block(b.runs,{size:11,ind:20,lead:b.ordered?b.n+'.':'•',after:3});
+  else block(b.runs,{size:11,after:6})}
+ // 2ª passada: cabeçalho e rodapé em todas as páginas (só agora se sabe o total)
+ const N=pages.length,when=new Date().toLocaleDateString('pt-BR'),author='Autor: '+pdfLatin(d.author||'—'),handle=pdfLatin(d.handle),right=x=>PDF_W-PDF_M-x;
+ const hf=i=>{const w1=pdfMeasure('Exportado em '+when,9,0,0),w2=pdfMeasure(author,9,0,0),pg=`Página ${i} de ${N}`,w3=pdfMeasure(pg,9,0,0);
+  return `BT /F2 12 Tf 0.1 0.1 0.1 rg 3 Tc ${pdfF(PDF_M)} ${pdfF(PDF_H-50)} Td (${pdfEsc(pdfLatin(d.app))}) Tj 0 Tc ET\n`
+  +`BT /F1 9 Tf 0.47 0.47 0.47 rg ${pdfF(right(w1))} ${pdfF(PDF_H-49)} Td (Exportado em ${when}) Tj ET\n`
+  +`0.7 w 0.1 G ${pdfF(PDF_M)} ${pdfF(PDF_H-62)} m ${pdfF(PDF_W-PDF_M)} ${pdfF(PDF_H-62)} l S\n0.5 w 0.8 G ${pdfF(PDF_M)} 64 m ${pdfF(PDF_W-PDF_M)} 64 l S\n`
+  +`BT /F2 9 Tf 0.1 0.1 0.1 rg ${pdfF(PDF_M)} 46 Td (${pdfEsc(handle)}) Tj ET\n`
+  +`BT /F1 9 Tf 0.1 0.1 0.1 rg ${pdfF((PDF_W-w2)/2)} 46 Td (${pdfEsc(author)}) Tj ET\n`
+  +`BT /F1 9 Tf 0.47 0.47 0.47 rg ${pdfF(right(w3))} 46 Td (${pdfEsc(pdfLatin(pg))}) Tj ET\n`};
+ // objetos do arquivo: 1 catálogo, 2 páginas, 3-6 fontes, 7 informações, depois (página, conteúdo) por página
+ const o=['%PDF-1.4\n%\xe2\xe3\xcf\xd3\n'],off=[];let len=o[0].length;
+ const add=(id,body)=>{off[id]=len;const s=`${id} 0 obj\n${body}\nendobj\n`;o.push(s);len+=s.length};
+ add(1,'<< /Type /Catalog /Pages 2 0 R >>');
+ add(2,`<< /Type /Pages /Count ${N} /Kids [${pages.map((_,k)=>`${8+2*k} 0 R`).join(' ')}] >>`);
+ ['Helvetica','Helvetica-Bold','Helvetica-Oblique','Helvetica-BoldOblique'].forEach((f,k)=>add(3+k,`<< /Type /Font /Subtype /Type1 /BaseFont /${f} /Encoding /WinAnsiEncoding >>`));
+ const t=new Date(),p2=v=>String(v).padStart(2,'0');
+ add(7,`<< /Title (${pdfEsc(pdfLatin(d.title||''))}) /Author (${pdfEsc(pdfLatin(d.author||''))}) /Creator (${pdfEsc(pdfLatin(d.app))}) /Producer (${pdfEsc(pdfLatin(d.app))}) /CreationDate (D:${t.getFullYear()}${p2(t.getMonth()+1)}${p2(t.getDate())}${p2(t.getHours())}${p2(t.getMinutes())}${p2(t.getSeconds())}) >>`);
+ pages.forEach((c,k)=>{const s=c+hf(k+1);
+  add(8+2*k,`<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${PDF_W} ${PDF_H}] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R /F4 6 0 R >> >> /Contents ${9+2*k} 0 R >>`);
+  add(9+2*k,`<< /Length ${s.length} >>\nstream\n${s}\nendstream`)});
+ let x=`xref\n0 ${8+2*N}\n0000000000 65535 f \n`;for(let i=1;i<8+2*N;i++)x+=String(off[i]).padStart(10,'0')+' 00000 n \n';
+ x+=`trailer\n<< /Size ${8+2*N} /Root 1 0 R /Info 7 0 R >>\nstartxref\n${len}\n%%EOF\n`;
+ const all=o.join('')+x,u=new Uint8Array(all.length);for(let i=0;i<all.length;i++)u[i]=all.charCodeAt(i)&255;return u}
+</script>
+    <script>
+/* Exportar a nota atual em PDF, TXT, JSON ou Markdown, preservando TODA a formatação
+   (negrito, itálico, sublinhado, tachado, cor, grifo, tamanho, capítulos, tópicos, listas). */
+
+// converte qualquer cor CSS (rgb, rgba, hex, nome) em { hex, rgb:[r,g,b], a }
+let xcCtx=null;
+function xColor(c){const m=/^rgba?\(([^)]+)\)$/.exec(c.trim());   // caminho exato: o navegador normaliza style.color para rgb()/rgba()
+ if(m){const p=m[1].split(/[ ,\/]+/).filter(Boolean).map(Number),rgb=p.slice(0,3).map(v=>Math.round(v)),a=p.length>3?p[3]:1;
+  return{hex:'#'+rgb.map(v=>v.toString(16).padStart(2,'0')).join(''),rgb,a:Math.round(a*100)/100}}
+ if(!xcCtx){const k=document.createElement('canvas');k.width=k.height=1;xcCtx=k.getContext('2d',{willReadFrequently:true})}
+ xcCtx.clearRect(0,0,1,1);xcCtx.fillStyle='#000';xcCtx.fillStyle=c;xcCtx.fillRect(0,0,1,1);const d=xcCtx.getImageData(0,0,1,1).data,a=d[3]/255;
+ // getImageData devolve o pixel já multiplicado pelo alfa; desfaz para recuperar a cor pura
+ const rgb=a?[0,1,2].map(i=>Math.min(255,Math.round(d[i]/a))):[0,0,0];
+ return{hex:'#'+rgb.map(v=>v.toString(16).padStart(2,'0')).join(''),rgb,a:Math.round(a*100)/100}}
+// mistura a cor com o branco do papel (o PDF usa o grifo já "pré-misturado")
+const xOnWhite=c=>c.rgb.map(v=>Math.round(v*c.a+255*(1-c.a)));
+
+// HTML da nota -> blocos [{type, num?, n?, ordered?, runs:[{text, bold, italic, underline, strike, color, background, fontSize}]}]
+function noteBlocks(n){
+ const t=document.createElement('template');
+ t.innerHTML=clean(n.html||esc(n.body).split('\n').map(l=>'<p>'+l+'</p>').join(''));
+ const blocks=[];let h1=0;
+ const inline=(node,st,out)=>{
+  if(node.nodeType==3){const tx=node.textContent.replace(/\u00a0/g,' ');if(tx)out.push({...st,text:tx});return}
+  if(node.nodeType!=1)return;
+  const tg=node.tagName;if(tg=='BR'){out.push({...st,text:'\n'});return}
+  const s={...st},c=node.style;
+  if(tg=='B'||tg=='STRONG')s.bold=true;if(tg=='I'||tg=='EM')s.italic=true;if(tg=='U')s.underline=true;if(tg=='S'||tg=='STRIKE'||tg=='DEL')s.strike=true;
+  if(c){if(c.color)s.color=xColor(c.color);if(c.backgroundColor&&c.backgroundColor!='transparent')s.background=xColor(c.backgroundColor);
+   if(c.fontWeight=='bold'||+c.fontWeight>=600)s.bold=true;if(c.fontStyle=='italic')s.italic=true;
+   const td=c.textDecorationLine||c.textDecoration||'';if(/underline/.test(td))s.underline=true;if(/line-through/.test(td))s.strike=true;
+   if(/px$/.test(c.fontSize))s.fontSize=parseFloat(c.fontSize)}
+  node.childNodes.forEach(k=>inline(k,s,out))};
+ const runs=node=>{const out=[];node.childNodes.forEach(k=>inline(k,{},out));return out};
+ t.content.childNodes.forEach(node=>{
+  if(node.nodeType==3){if(node.textContent.trim())blocks.push({type:'p',runs:[{text:node.textContent}]});return}
+  const tg=node.tagName;
+  if(tg=='H1')blocks.push({type:'h1',num:++h1,runs:runs(node)});
+  else if(tg=='H2')blocks.push({type:'h2',runs:runs(node)});
+  else if(tg=='H3')blocks.push({type:'h3',runs:runs(node)});
+  else if(tg=='UL'||tg=='OL')[...node.children].forEach((li,i)=>blocks.push({type:'li',ordered:tg=='OL',n:i+1,runs:runs(li)}));
+  else blocks.push({type:'p',runs:runs(node)})});
+ return blocks}
+
+// ---------- JSON: cada trecho com todas as suas propriedades de formatação ----------
+const xRun=r=>({text:r.text,bold:!!r.bold,italic:!!r.italic,underline:!!r.underline,strike:!!r.strike,
+ color:r.color?r.color.hex:null,background:r.background?r.background.hex:null,backgroundAlpha:r.background?r.background.a:null,fontSizePx:r.fontSize||null});
+function exportJSON(n){return JSON.stringify({app:'NOEMA',format:'noema-note',version:1,exportedAt:new Date().toISOString(),author:fullName()||null,credit:'@dev-kauams',
+ note:{id:n.id,title:n.title,space:n.space,tags:n.tags,favorite:n.fav,archived:n.arch,trashed:n.trash,inbox:n.inbox,createdAt:new Date(n.created).toISOString(),updatedAt:new Date(n.updated).toISOString()},
+ blocks:noteBlocks(n).map(b=>({type:{h1:'chapter',h2:'topic',h3:'subtopic',li:'list-item',p:'paragraph'}[b.type],...(b.num?{number:b.num}:{}),...(b.type=='li'?{ordered:b.ordered,index:b.n}:{}),runs:b.runs.map(xRun)})),
+ text:n.body,html:n.html},null,2)}
+
+// ---------- TXT: texto legível com marcas inline para a formatação ----------
+function xMark(r){let t=r.text;
+ if(r.bold)t='**'+t+'**';if(r.italic)t='_'+t+'_';if(r.strike)t='~~'+t+'~~';if(r.underline)t='__'+t+'__';
+ if(r.background)t='=='+t+'==';if(r.fontSize)t='{tam:'+r.fontSize+'px}'+t+'{/tam}';if(r.color)t='{cor:'+r.color.hex+'}'+t+'{/cor}';return t}
+function exportTXT(n){const meta=xMeta(n),L=[];
+ L.push('NOEMA · nota exportada','Autor: '+(fullName()||'—')+' · @dev-kauams','',ttl(n).toUpperCase(),...meta,'',
+  'Legenda: **negrito** _itálico_ __sublinhado__ ~~tachado~~ ==grifado== {cor:#hex}texto{/cor} {tam:Npx}texto{/tam}','-'.repeat(60),'');
+ for(const b of noteBlocks(n)){const s=b.runs.map(xMark).join('');
+  if(b.type=='h1')L.push('','CAPÍTULO '+b.num+'. '+s,'');else if(b.type=='h2')L.push('','TÓPICO: '+s);else if(b.type=='h3')L.push('','SUBTÓPICO: '+s);
+  else if(b.type=='li')L.push((b.ordered?b.n+'. ':'- ')+s);else L.push(s)}
+ return L.join('\n')+'\n'}
+const xDate=t=>new Date(t).toLocaleDateString('pt-BR');
+function xMeta(n){return[n.space?'Espaço: '+n.space:'',n.tags.length?'Tags: '+n.tags.map(t=>'#'+t).join(' '):'','Criada em '+xDate(n.created)+' · editada em '+xDate(n.updated)].filter(Boolean)}
+
+// ---------- PDF ----------
+function exportPDF(n){
+ const blocks=noteBlocks(n).map(b=>({...b,runs:b.runs.map(r=>({...r,color:r.color&&r.color.rgb,background:r.background&&xOnWhite(r.background)}))}));
+ return pdfBuild({app:'NOEMA',author:fullName(),handle:'@dev-kauams',title:ttl(n),meta:xMeta(n),blocks})}
+
+// ---------- entrega do arquivo ----------
+const xSlug=s=>(s||'nota').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,60)||'nota';
+const X_FMT={pdf:{ext:'pdf',mime:'application/pdf',make:exportPDF},txt:{ext:'txt',mime:'text/plain',make:exportTXT},json:{ext:'json',mime:'application/json',make:exportJSON},md:{ext:'md',mime:'text/markdown',make:n=>toMd(n)}};
+// 1) recurso "downloads" do claude.ai (página publicada); 2) download normal do navegador (arquivo aberto no computador)
+// Base64 de texto (UTF-8) ou de bytes: o Android precisa disso para gravar o arquivo.
+const xB64=d=>{if(typeof d=='string')return btoa(unescape(encodeURIComponent(d)));let s='';for(let i=0;i<d.length;i+=8192)s+=String.fromCharCode(...d.subarray(i,i+8192));return btoa(s)};
+async function xSave(filename,data,mime){
+ const nat=window.Capacitor&&Capacitor.isNativePlatform&&Capacitor.isNativePlatform()&&Capacitor.Plugins;   // app Android (Capacitor)
+ if(nat&&nat.Filesystem&&nat.Share){const f=await nat.Filesystem.writeFile({path:filename,data:xB64(data),directory:'CACHE'});await nat.Share.share({title:filename,url:f.uri,dialogTitle:'Salvar ou compartilhar'});return 'compartilhado'}
+ let dl=null;try{dl=window.claude&&claude.use?await claude.use('downloads'):null}catch(e){}
+ if(dl){await dl.save({filename,data});return 'salvo'}
+ if(window.claude&&claude.use)return 'indisponivel';
+ const url=URL.createObjectURL(new Blob([data],{type:mime})),a=document.createElement('a');a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),4000);return 'baixado'}
+async function openExport(){if(!cur)return;await flush();$('#xs').textContent='';$('#xd').showModal()}
+async function doExport(fmt){const f=X_FMT[fmt],n=cur,st=$('#xs');if(!f||!n)return;
+ try{st.textContent='Gerando '+f.ext.toUpperCase()+'…';const data=f.make(n),name=xSlug(n.title)+'.'+f.ext;
+  const r=await xSave(name,data,f.mime);
+  if(r=='indisponivel'){if(fmt=='pdf'){st.textContent='O download de PDF não está disponível dentro desta visualização. Abra o arquivo noema.html no computador.'}else{$('#xd').close();openData(data,'Texto exportado. Copie e salve como '+name)}return}
+  st.textContent=(r=='salvo'?'Arquivo salvo: ':r=='compartilhado'?'Menu de compartilhar aberto: ':'Download iniciado: ')+name+(fmt=='pdf'&&pdfLost?` (${pdfLost} caractere(s) fora do alfabeto latino viraram "?")`:'')}
+ catch(e){st.textContent=e&&e.code=='declined'?'Você cancelou o salvamento.':'Não foi possível exportar: '+((e&&e.message)||e)}}
+$('#xd').addEventListener('click',e=>{const b=e.target.closest('[data-fmt]');if(b)doExport(b.dataset.fmt);if(e.target.id=='xcl')$('#xd').close()});
+</script>
+    <script>
+/* IA leve e local (sem backend): tokenização, palavras-chave e resumo curto de notas. */
+
+const AI_STOP = new Set([
+  "o","a","os","as","e","de","do","da","dos","das","em","no","na","nos","nas",
+  "por","para","com","sem","ou","se","que","um","uma","uns","umas","seu","sua",
+  "seus","suas","meu","minha","meus","minhas","este","esta","estes","estas",
+  "esse","essa","esses","essas","aquele","aquela","aqueles","aquelas","eu",
+  "você","vocês","nós","ele","ela","eles","elas","ser","estar","tem","tenho",
+  "temos","houve","havia","irá","seria","não","sim","já","mais","menos","muito",
+  "bem","mal","pouco","quando","onde","como","por que","qual","quem","há","têm",
+  "tem","é","são","era","eram","foi","foram","desde","até","entre","contra","sem",
+  "sobre","sob","deste","dessa","destes","dessas"
+]);
+
+function aiTokens(text){
+  const t=String(text||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9 ]+/g,' ');
+  return t.split(/\s+/).map(s=>s.trim()).filter(s=>s.length>2&&!AI_STOP.has(s));
+}
+
+function aiKeywords(text,max=8){
+  const f={};
+  for(const t of aiTokens(text))f[t]=(f[t]||0)+1;
+  return Object.entries(f).sort((a,b)=>b[1]-a[1]).slice(0,max).map(e=>e[0]);
+}
+
+function aiSummarize(note,maxWords=40){
+  const title=note.title||'Sem título';
+  const keys=aiKeywords(note.body||'',6).join(', ');
+  let frase=title;
+  if(keys)frase=title+'. '+title.charAt(0).toUpperCase()+title.slice(1)+': '+keys+'.';
+  else frase=title+'.';
+  return frase;
+}
+
+function aiTagSuggestions(note){
+  return aiKeywords(note.title||'',4).concat(aiKeywords(note.body||'',6)).slice(0,6);
+}
+</script>
+    <script>
+/* Navegação: troca de visão, espaços e tags no menu lateral. */
+// Troca de visão. A home usa a classe body.home para esconder lista e editor.
+function go(v) {
+  view = v;
+  tagF = null;
+  document.body.classList.toggle(
+    "home",
+    v == "home" ||
+      v == "tasks" ||
+      v == "reminders" ||
+      v == "calendar" ||
+      v == "graph",
+  );
+  document.body.classList.toggle("tasks", v == "tasks");
+  document.body.classList.toggle("reminders", v == "reminders");
+  document.body.classList.toggle("calendar", v == "calendar");
+  document.body.classList.toggle("graph", v == "graph");
+  renderNav();
+  renderList();
+  if (v == "home") renderHome(true);
+  else if (v == "tasks") renderTasks();
+  else if (v == "reminders") renderReminders();
+  else if (v == "calendar") renderCalendar();
+  else if (v == "graph") renderGraph();
+  else animList();
+}
+// Desenha o menu: início, espaços (com contagem), visões e tags.
+function renderNav() {
+  const c = (v) =>
+    v == "tasks"
+      ? tasks.length
+      : v == "reminders"
+        ? reminders.filter((r) => r.active).length
+        : v == "calendar"
+          ? calendarItemsOn(calendarKey(new Date())).length
+          : v == "graph"
+            ? graphData().nodes.length
+            : (() => {
+                const o = view;
+                view = v;
+                const r = notes.filter(inV).length;
+                view = o;
+                return r;
+              })();
+  $("#nv").innerHTML =
+    navTop() +
+    VIEWS.map(
+      ([k, l]) =>
+        `<button data-v="${k}" aria-current="${view == k}"><span>${l}</span><span class="m">${c(k)}</span></button>`,
+    ).join("");
+  const t = {};
+  notes
+    .filter((n) => !n.trash)
+    .forEach((n) => n.tags.forEach((x) => (t[x] = (t[x] || 0) + 1)));
+  $("#tags").innerHTML =
+    Object.keys(t)
+      .sort()
+      .map(
+        (x) =>
+          `<button data-t="${esc(x)}" aria-current="${F.tags.includes(x)}"><span>#${esc(x)}</span><span class="m">${t[x]}</span></button>`,
+      )
+      .join("") || '<div class="m" style="padding:4px 8px">nenhuma</div>';
+}
+$("#nv").onclick = (e) => {
+  const b = e.target.closest("button");
+  if (!b) return;
+  if (b.dataset.sp !== undefined) {
+    const v = b.dataset.sp;
+    if (v == "__m") return openSpaces();
+    SP = v == "__none" ? "" : v || null;
+    go(view == "home" ? "all" : view);
+  } else go(b.dataset.v);
+};
+$("#tags").onclick = (e) => {
+  const b = e.target.closest("button");
+  if (b) {
+    const x = b.dataset.t;
+    F.tags = F.tags.includes(x) ? F.tags.filter((y) => y != x) : [...F.tags, x];
+    F.un = false;
+    renderNav();
+    renderList();
+  }
+};
+$("#bsk").onclick = openCanvas;
+function navTop() {
+  const sp = (prof && prof.spaces) || [],
+    cs = (s) =>
+      notes.filter((n) => !n.trash && !n.arch && n.space === s).length,
+    un = cs("");
+  return (
+    `<button data-v="home" aria-current="${view == "home"}"><span>Início</span></button><h3>espaços</h3><button data-sp="" aria-current="${SP === null}"><span>Tudo</span></button>` +
+    sp
+      .map(
+        (s) =>
+          `<button data-sp="${esc(s)}" aria-current="${SP === s}"><span>${esc(s)}</span><span class="m">${cs(s)}</span></button>`,
+      )
+      .join("") +
+    (un
+      ? `<button data-sp="__none" aria-current="${SP === ""}"><span>Sem espaço</span><span class="m">${un}</span></button>`
+      : "") +
+    `<button data-sp="__m"><span class="m">gerenciar espaços</span></button><h3>notas</h3>`
+  );
+}
+</script>
+    <script>
+/* Lista de notas e captura rápida. */
+// Desenha a lista aplicando visão, espaço, busca, filtros e ordenação.
+function renderList(){const L=$('#lp'),qq=q.toLowerCase();
+ const rows=notes.filter(inV).filter(n=>matchF(n)&&(!qq||(n.title+' '+n.body+' '+n.tags.join(' ')).toLowerCase().includes(qq))).sort(sortF);
+ L.innerHTML=`<h2 class="lh">${esc(SP===null?'Tudo':SP||'Sem espaço')}<span class="m">${esc((VIEWS.find(v=>v[0]==view)||[])[1]||'')}</span></h2><input id="q" type="search" placeholder="Buscar" aria-label="Buscar" value="${esc(q)}">`+`<button class="gh" data-f="open" aria-expanded="${fOpen}">Filtros${fn()?' ('+fn()+')':''}</button>`+(fOpen?fpHTML():'')+
+ (view=='inbox'?`<input id="cap" placeholder="Capturar um pensamento (Enter)" aria-label="Captura rápida">`:`<button class="gh" id="nn" style="margin-bottom:8px">Nova nota</button>`)+
+ (rows.length?rows.map(n=>`<button class="it" data-id="${n.id}" aria-current="${!!cur&&cur.id==n.id}"><b>${esc(ttl(n))}</b><span class="s">${esc(n.body.replace(/\s+/g,' ').slice(0,90)||'vazia')}</span><span class="m">${new Date(n.updated).toLocaleDateString('pt-BR')}${n.fav?' · favorita':''}</span></button>`).join(''):
+ `<div class="empty">${view=='inbox'?'Nada pendente. Escreva o que passou pela cabeça e organize depois.':q||fn()?'Nenhuma nota para esse filtro.':'Esta lista está vazia.'}</div>`);
+ $('#q').oninput=e=>{q=e.target.value;const p=e.target.selectionStart;renderList();const n=$('#q');n.focus();n.setSelectionRange(p,p)};
+ const c=$('#cap');if(c)c.onkeydown=async e=>{if(e.key=='Enter'&&c.value.trim()){const n=mk({inbox:true,space:SP||'',body:c.value.trim(),html:'<p>'+esc(c.value.trim())+'</p>'});notes.push(n);await save(n)||setS('Falha ao salvar',1);renderNav();renderList();$('#cap').focus()}};
+ const b=$('#nn');if(b)b.onclick=newNote}
+$('#lp').addEventListener('click',e=>{const b=e.target.closest('.it');if(b)openN(b.dataset.id)});
+</script>
+    <script>
+/* Editor rico: formatação, capítulos, sumário, links, Markdown e modo Zen. */
+async function newNote(){await flush();const n=mk({space:SP||''});notes.push(n);view='all';document.body.classList.remove('home');await save(n);cur=n;ver=saved=0;document.body.classList.add('ed');renderNav();renderList();renderEd();$('#ti').focus()}
+// Abre uma nota: grava a anterior antes, zera o controle de versão e mostra o editor.
+async function openN(id){await flush();cur=notes.find(n=>n.id==id);delArm=false;lastEd=null;document.body.classList.remove('home');if(view=='home')view='all';ver=saved=0;document.body.classList.add('ed');renderList();renderEd()}
+// Desenha o editor da nota atual (título, tags, espaço, barra, corpo, links). Sem nota, mostra a saudação.
+function renderEd(){const E=$('#ed');if(!cur){E.innerHTML=(setTimeout(animHi,0),hiHTML());return}
+ const n=cur;
+ E.innerHTML=`<div class="meta"><button class="gh back" id="bk">Voltar</button><span class="m" id="st" role="status">${db?'Aberta':'Só em memória: nada será mantido ao fechar'}</span><span class="sp"></span><button class="gh" id="zn" title="Modo Zen (Ctrl+.)">Zen</button></div>
+ <input id="ti" placeholder="Título" aria-label="Título"><input id="tg" class="m" placeholder="tags, separadas por vírgula" aria-label="Tags"><div class="fr" id="sps" role="group" aria-label="Espaço da nota" style="margin-bottom:14px"><button class="fc" data-sa="" aria-pressed="${!n.space}">Sem espaço</button>${((prof&&prof.spaces)||[]).map(s=>`<button class="fc" data-sa="${esc(s)}" aria-pressed="${n.space===s}">${esc(s)}</button>`).join('')}</div>
+ <div class="tb" role="toolbar" aria-label="Formatação">
+ <button data-c="h1" title="Capítulo" aria-label="Capítulo">Capítulo</button><button data-c="h2" title="Tópico" aria-label="Tópico">Tópico</button><button data-c="p" title="Texto normal" aria-label="Texto normal">Texto</button><i class="v"></i>
+ <button data-c="b" title="Negrito (Ctrl+B)" aria-label="Negrito"><b>N</b></button><button data-c="i" title="Itálico (Ctrl+I)" aria-label="Itálico"><i>I</i></button><button data-c="u" title="Sublinhado (Ctrl+U)" aria-label="Sublinhado"><u>S</u></button><button data-c="hl" title="Grifar" aria-label="Grifar"><span style="background:rgba(255,200,0,.45);padding:0 4px">Grifar</span></button>
+ <button data-c="cor" id="cb" title="Cor do texto (sem seleção, muda o texto todo)" aria-label="Cor do texto" aria-haspopup="true" aria-expanded="false"><span id="cs" style="border-bottom:3px solid var(--acc)">Cor</span></button><i class="v"></i>
+ <button data-c="s-" title="Diminuir (sem seleção, o texto todo)" aria-label="Diminuir tamanho">A−</button><button data-c="s+" title="Aumentar (sem seleção, o texto todo)" aria-label="Aumentar tamanho">A+</button><button data-c="ul" title="Lista" aria-label="Lista">Lista</button><button data-c="rf" title="Limpar formatação" aria-label="Limpar formatação">Limpar</button></div>
+ <div id="ol"></div><div id="bo" contenteditable="true" role="textbox" aria-multiline="true" aria-label="Conteúdo" data-ph="Escreva. Use [[Nome de outra nota]] para criar um link."></div>
+ <div class="meta" style="margin:22px 0 0;flex-wrap:wrap;gap:4px">${n.trash?`<button class="gh" data-a="rest">Restaurar</button><button class="gh d" data-a="del">${delArm?'Confirmar exclusão definitiva':'Excluir definitivamente'}</button>`:
+ `${n.inbox?'<button class="gh" data-a="org">Mover para Notas</button>':''}<button class="gh" data-a="fav">${n.fav?'Desfavoritar':'Favoritar'}</button><button class="gh" data-a="arch">${n.arch?'Desarquivar':'Arquivar'}</button><button class="gh" data-a="trash">Lixeira</button>`}<button class="gh" data-a="exp">Exportar</button></div>
+ <div id="links"></div><div class="m" id="wc" style="margin-top:14px"></div>`;
+ $('#ti').value=n.title;$('#tg').value=n.tags.join(', ');
+ $('#bo').innerHTML=clean(n.html||esc(n.body).split('\n').map(l=>'<p>'+(l||'<br>')+'</p>').join(''));
+ try{document.execCommand('defaultParagraphSeparator',false,'p')}catch(e){}
+ const bo=$('#bo');outline();wc();
+ $('#ti').oninput=e=>{n.title=e.target.value;touch()};
+ $('#tg').oninput=e=>{n.tags=[...new Set(e.target.value.split(',').map(s=>s.trim().replace(/^#/,'')).filter(Boolean))];touch()};
+ bo.oninput=onEdit;
+ bo.onpaste=e=>{e.preventDefault();document.execCommand('insertText',false,e.clipboardData.getData('text/plain'))};
+ $('#bk').onclick=async()=>{await flush();document.body.classList.remove('ed')};
+ $('#zn').onclick=toggleZen;
+ animEd();
+ renderLinks()}
+function wc(){const w=$('#wc');if(w&&cur)w.textContent=(cur.body.trim()?cur.body.trim().split(/\s+/).length:0)+' palavras · criada em '+new Date(cur.created).toLocaleDateString('pt-BR')}
+// Toda edição: copia HTML e texto puro, atualiza contagem e sumário e agenda o autosave.
+function onEdit(){cur.html=$('#bo').innerHTML;cur.body=$('#bo').innerText;wc();outline();touch()}
+// Sumário: capítulos (h1) e tópicos (h2) viram links que rolam até o título.
+function outline(){const o=$('#ol');if(!o)return;const hs=$$('#bo h1,#bo h2');let c=0;
+ o.innerHTML=hs.length?`<div class="m" style="margin-bottom:4px">sumário</div>`+hs.map((h,i)=>`<button data-h="${i}" class="${h.tagName=='H2'?'l2':''}">${h.tagName=='H1'?++c+'. ':''}${esc(h.textContent.trim()||'sem título')}</button>`).join(''):''}
+// Guarda o último trecho selecionado no editor para formatar mesmo depois de clicar num botão.
+document.addEventListener('selectionchange',()=>{const s=getSelection(),b=$('#bo');if(b&&s.rangeCount&&b.contains(s.anchorNode))lastR=s.getRangeAt(0).cloneRange()});
+// Formata via execCommand. Sem seleção e com whole=true, aplica ao texto inteiro.
+function fmt(cmd,val,whole){const b=$('#bo');b.focus();const s=getSelection();if(lastR&&b.contains(lastR.startContainer)){s.removeAllRanges();s.addRange(lastR)}
+ let all=false;if(whole&&s.isCollapsed){document.execCommand('selectAll');all=true}
+ document.execCommand('styleWithCSS',false,true);document.execCommand(cmd,false,val);if(all)getSelection().collapseToEnd();onEdit()}
+// Tamanho relativo: troca <font size=7> por <span> com font-size em px, multiplicando o tamanho atual.
+function size(f){const b=$('#bo');b.focus();const s=getSelection();if(lastR&&b.contains(lastR.startContainer)){s.removeAllRanges();s.addRange(lastR)}
+ let all=false;if(s.isCollapsed){document.execCommand('selectAll');all=true}
+ document.execCommand('styleWithCSS',false,false);document.execCommand('fontSize',false,'7');
+ $$('#bo font[size="7"]').forEach(x=>{const px=parseFloat(getComputedStyle(x.parentElement).fontSize)*f,sp=document.createElement('span');sp.style.fontSize=Math.max(10,Math.min(80,px)).toFixed(1)+'px';sp.innerHTML=x.innerHTML;x.replaceWith(sp)});
+ if(all)getSelection().collapseToEnd();onEdit()}
+// Grifar/desgrifar: alterna a cor de fundo do trecho.
+function hl(){const s=getSelection(),e=s.anchorNode&&(s.anchorNode.nodeType==1?s.anchorNode:s.anchorNode.parentElement);
+ const on=e&&getComputedStyle(e).backgroundColor!='rgba(0, 0, 0, 0)'&&getComputedStyle(e).backgroundColor!='transparent';fmt('hiliteColor',on?'transparent':'rgba(255,200,0,.42)')}
+// Backlinks ([[título]] em outras notas) e links de saída, com atalho para criar a nota inexistente.
+function renderLinks(){const L=$('#links');if(!L||!cur)return;const t=cur.title.trim().toLowerCase();
+ const inb=t?notes.filter(m=>m.id!=cur.id&&!m.trash&&m.body.toLowerCase().includes('[['+t+']]')):[];
+ const out=[...new Set([...cur.body.matchAll(/\[\[([^\]\n]+)\]\]/g)].map(m=>m[1].trim()))];
+ L.innerHTML=`<div class="m">referências de entrada</div>`+(inb.length?inb.map(m=>`<button data-open="${m.id}">${esc(ttl(m))}</button>`).join(''):'<div class="m">nenhuma</div>')+
+ `<div class="m" style="margin-top:10px">referências de saída</div>`+(out.length?out.map(x=>{const f=notes.find(m=>!m.trash&&m.title.toLowerCase()==x.toLowerCase());return f?`<button data-open="${f.id}">${esc(x)}</button>`:`<button data-mk="${esc(x)}" style="color:#c0392b">${esc(x)} (inexistente: criar)</button>`}).join(''):'<div class="m">nenhuma</div>')}
+// Exporta em Markdown: capítulos viram ##, tópicos ###, listas viram '-'.
+function toMd(n){const t=document.createElement('template');t.innerHTML=clean(n.html);const o=[];t.content.childNodes.forEach(c=>{const x=c.textContent.trim();if(!x)return;const k=c.nodeName;
+ o.push(k=='H1'?'## '+x:k=='H2'?'### '+x:k=='UL'||k=='OL'?[...c.children].map(l=>'- '+l.textContent.trim()).join('\n'):x)});
+ return `# ${ttl(n)}\n\n`+(n.tags.length?n.tags.map(x=>'#'+x).join(' ')+'\n\n':'')+(n.html?o.join('\n\n'):n.body)+'\n'}
+// Modo Zen: esconde a interface (classe body.zen).
+function toggleZen(){if(!cur&&!document.body.classList.contains('zen'))return newNote().then(toggleZen);const z=document.body.classList.toggle('zen');if(z)document.body.classList.add('ed');const b=$('#zn');if(b)b.textContent=z?'Sair do Zen':'Zen';if(z)$('#bo').focus();if(anim())gsap.from('#ed>*:not(.tb)',{opacity:0,y:10,duration:.7,stagger:.06,ease:'power2.out',clearProps:'transform,opacity'})}
+$('#ed').addEventListener('mousedown',e=>{if(e.target.closest('.tb button'))e.preventDefault()});
+// Ações dos botões do editor, por delegação de eventos.
+$('#ed').addEventListener('click',async e=>{const b=e.target.closest('button');if(!b)return;
+ if(b.dataset.h!==undefined){const h=$$('#bo h1,#bo h2')[+b.dataset.h];if(h)h.scrollIntoView({block:'center'});return}
+ const c=b.dataset.c;if(c){({h1:()=>fmt('formatBlock','<h1>'),h2:()=>fmt('formatBlock','<h2>'),p:()=>fmt('formatBlock','<p>'),b:()=>fmt('bold'),i:()=>fmt('italic'),u:()=>fmt('underline'),ul:()=>fmt('insertUnorderedList'),hl,'s+':()=>size(1.15),'s-':()=>size(.87),rf:()=>fmt('removeFormat',null,true),cor:openCP})[c]();return}
+ if(b.dataset.sa!==undefined&&cur){cur.space=b.dataset.sa;ver++;await flush();return renderEd()}
+ if(b.dataset.open)return openN(b.dataset.open);
+ if(b.dataset.mk){await flush();const n=mk({title:b.dataset.mk});notes.push(n);await save(n);renderNav();return openN(n.id)}
+ const a=b.dataset.a;if(!a||!cur)return;const n=cur;
+ if(a=='exp'){await flush();return openExport()}
+ if(a=='md'){await flush();return openData(toMd(n),'Markdown da nota. Copie o texto.')}
+ if(a=='del'){if(!delArm){delArm=true;return renderEd()}await rm(n.id).catch(()=>{});syncTomb(n.id);notes=notes.filter(x=>x.id!=n.id);cur=null;delArm=false;document.body.classList.remove('ed');renderNav();renderList();return renderEd()}
+ if(a=='fav')n.fav=!n.fav;if(a=='arch')n.arch=!n.arch;if(a=='trash')n.trash=true;if(a=='rest')n.trash=false;if(a=='org')n.inbox=false;
+ ver++;await flush();if(!inV(n)){cur=null;document.body.classList.remove('ed')}renderNav();renderList();renderEd()});
+</script>
+    <script>
+/* Seletor de cor próprio (substitui o input nativo). */
+const SW=[['Padrão',null],['Violeta','#8b7be8'],['Azul','#4a86e8'],['Verde','#3fa46f'],['Amarelo','#d4a72c'],['Laranja','#e07a2f'],['Vermelho','#d9463e'],['Rosa','#d65ca3'],['Cinza','#8a8880']];
+$('#cp .sw').innerHTML=SW.map(([n,c])=>`<button class="swb${c?'':' def'}" data-col="${c||''}" aria-label="${n}" title="${n}"${c?` style="background:${c}"`:''}></button>`).join('');
+function openCP(){const p=$('#cp'),b=$('#cb');if(!p.hidden)return closeCP();p.hidden=false;const r=b.getBoundingClientRect(),h=p.offsetHeight,w=p.offsetWidth;let top=r.bottom+8;if(top+h>innerHeight-8)top=Math.max(8,r.top-h-8);
+ p.style.top=top+'px';p.style.left=Math.max(8,Math.min(r.left,innerWidth-w-8))+'px';b.setAttribute('aria-expanded','true');if(anim())gsap.from(p,{opacity:0,y:-6,duration:.25,ease:'power2.out',clearProps:'transform,opacity'})}
+function closeCP(){const p=$('#cp');if(p.hidden)return;p.hidden=true;const b=$('#cb');if(b)b.setAttribute('aria-expanded','false')}
+// Aplica a cor. 'Padrão' usa uma cor-marca e depois remove a propriedade, voltando à cor do tema.
+function setCol(c){const MK='#010203';fmt('foreColor',c||MK,true);if(!c)$$('#bo [style*="color"]').forEach(e=>{if(e.style.color=='rgb(1, 2, 3)'){e.style.removeProperty('color');if(!e.getAttribute('style'))e.removeAttribute('style')}});
+ onEdit();const s=$('#cs');if(s)s.style.borderBottomColor=c||'var(--acc)';closeCP()}
+$('#cp').addEventListener('mousedown',e=>{if(e.target.id!='hx')e.preventDefault()});
+$('#cp').addEventListener('click',e=>{const b=e.target.closest('.swb');if(b)setCol(b.dataset.col||null)});
+$('#hx').onkeydown=e=>{if(e.key=='Enter'){e.preventDefault();let v=e.target.value.trim();if(v&&v[0]!='#')v='#'+v;if(/^#[0-9a-f]{6}$/i.test(v)){e.target.removeAttribute('aria-invalid');e.target.value='';setCol(v)}else e.target.setAttribute('aria-invalid','true')}else e.target.removeAttribute('aria-invalid')};
+document.addEventListener('mousedown',e=>{const p=$('#cp');if(!p.hidden&&!p.contains(e.target)&&!e.target.closest('#cb'))closeCP()});
+addEventListener('keydown',e=>{if(e.key=='Escape'&&!$('#cp').hidden){closeCP();e.stopImmediatePropagation()}},true);
+</script>
+    <script>
+/* Campo de data em três partes (dia, mês, ano) para o aniversário. */
+// Marcação dos três campos (dia, mês, ano) e de um input oculto #oi com o valor ISO.
+const dtHTML=()=>`<div class="dtf" role="group" aria-label="Data de nascimento"><input type="hidden" id="oi"><input id="dd1" class="oin" inputmode="numeric" maxlength="2" placeholder="dd" aria-label="Dia" autocomplete="bday-day"><b>/</b><input id="dd2" class="oin" inputmode="numeric" maxlength="2" placeholder="mm" aria-label="Mês" autocomplete="bday-month"><b>/</b><input id="dd3" class="oin y" inputmode="numeric" maxlength="4" placeholder="aaaa" aria-label="Ano" autocomplete="bday-year"></div>`;
+// Liga os campos: só dígitos, foco avança ao completar, Backspace volta, e só gera ISO se a data existe.
+function dtInit(h){const f=[...h.parentElement.querySelectorAll('input:not([type=hidden])')],[y0,m0,d0]=(h.value||'').split('-');if(y0){f[0].value=d0;f[1].value=m0;f[2].value=y0}
+ const sync=()=>{const d=+f[0].value,m=+f[1].value,y=+f[2].value,t=new Date(y,m-1,d),ok=f[0].value&&f[1].value&&f[2].value.length==4&&t.getFullYear()==y&&t.getMonth()==m-1&&t.getDate()==d;h.value=ok?`${String(y).padStart(4,'0')}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`:''};
+ f.forEach((x,i)=>{x.oninput=()=>{x.value=x.value.replace(/\D/g,'');if(x.value.length==x.maxLength&&f[i+1])f[i+1].focus();sync()};x.onkeydown=e=>{if(e.key=='Backspace'&&!x.value&&f[i-1]){f[i-1].focus();e.preventDefault()}}});sync()}
+</script>
+    <script>
+/* Entrada na conta e criação de perfil, em telas cheias, passo a passo.
+   Telas: auth -> email -> pass (conta)  |  name -> last -> bday (perfil)  |  done. */
+const OBP={name:{q:'Como devemos te chamar?',h:'Seu primeiro nome.',p:'Nome',ac:'given-name',max:40},
+ last:{q:'E o seu sobrenome?',h:'Aparece como autor nas notas que você exporta.',p:'Sobrenome',ac:'family-name',max:60},
+ bday:{q:'Quando é o seu aniversário?',h:'Só para te cumprimentar. Pode pular.',opt:1}};
+const PSTEPS=['name','last','bday'];
+const words=s=>s.split(' ').map(w=>`<span class="ow"><span class="oc">${esc(w)}</span></span>`).join(' ');
+let obMode='new',obPw='signin';   // 'new' = primeiro acesso | 'link' = entrar numa conta a partir das Configurações
+// Abre o overlay. Com sincronização configurada e sem conta, começa pela escolha de entrada.
+function runOb(mode){obMode=mode||'new';obEdit=obMode=='link';obDone=false;obPw='signin';
+ obTmp={name:prof&&prof.name||'',last:prof&&prof.last||'',bday:prof&&prof.bday||'',email:''};
+ document.body.classList.add('onb');$('#app').inert=true;const o=$('#ob');o.hidden=false;o.style.cssText='';
+ if(obEdit&&anim())gsap.fromTo(o,{opacity:0},{opacity:1,duration:.5});$('#ov').innerHTML='';
+ obGo(syncOn()&&!SES?'auth':'name')}
+// Mostra uma tela: a anterior sai para cima, as palavras da pergunta sobem de uma máscara, a linha do campo se desenha.
+function obShow(html,bind){const ov=$('#ov'),old=ov.firstChild;
+ const build=()=>{ov.innerHTML=html;if(bind)bind(ov.firstChild);fitOb();document.fonts&&document.fonts.ready.then(fitOb);
+  const f=$('#dd1')||$('#oi')||$('#oen')||$('#oem')||$('#ov .obtn');if(f)f.focus({preventScroll:true});
+  if(anim())gsap.timeline().from('.oc',{yPercent:115,duration:1,stagger:.07,ease:'power4.out'}).from('.oline',{scaleX:0,duration:1.1,ease:'expo.out'},.25).from('#ov .m,#ov .oin,#ov .oact,#ov .oopts,#ov .oerr',{opacity:0,y:14,duration:.7,stagger:.08,ease:'power3.out',clearProps:'transform,opacity'},.35)};
+ if(old&&anim())gsap.to(old,{y:-30,opacity:0,duration:.4,ease:'power2.in',onComplete:build});else build()}
+const obErr=t=>{const e=$('#ov .oerr');if(e)e.textContent=t};
+const obBusy=(on,label)=>$$('#ov .obtn,#ov .gh').forEach(b=>{b.disabled=on;if(b.classList.contains('obtn')&&label&&on){b.dataset.t=b.textContent;b.textContent=label}else if(b.dataset.t){b.textContent=b.dataset.t}});
+// Formulário de uma pergunta com um campo. cfg: { n, total, q, h, type, ph, ac, max, value, extra, back, onSubmit }
+function obForm(c){obShow(`<form class="ovw" novalidate><span class="m">${c.n}</span><label class="oq" for="oi">${words(c.q)}</label><div class="oiw">${c.field||`<input id="oi" class="oin" type="${c.type||'text'}" placeholder="${c.ph||''}" autocomplete="${c.ac||'off'}" ${c.max?`maxlength="${c.max}"`:''}>`}<i class="oline"></i></div><p class="m">${esc(c.h)}</p><p class="oerr" role="alert"></p><div class="oact"><button class="obtn" type="submit">${c.ok||'Continuar'}</button>${c.extra||''}${c.back?'<button type="button" class="gh" id="obk">Voltar</button>':''}</div></form>`,f=>{
+  const inp=$('#oi');if(c.value!==undefined)inp.value=c.value;if(c.init)c.init(inp);
+  f.onsubmit=async e=>{e.preventDefault();obErr('');await c.onSubmit(inp.value,inp)};
+  const bk=$('#obk');if(bk)bk.onclick=()=>c.back(inp.value);c.bind&&c.bind(f,inp)})}
+// Roteador das telas.
+function obGo(sc,opt){
+ if(sc=='auth')return obShow(`<div class="ovw"><span class="m">conta</span><h2 class="oq">${words('Como você quer entrar?')}</h2><p class="m">Entre para sincronizar suas notas entre aparelhos.</p><p class="oerr" role="alert"></p><div class="oopts">${googleAvailable()?'<button class="obtn" id="ogo">Continuar com Google</button>':''}<button class="obtn" id="oem">E-mail e senha</button><button class="gh" id="oloc">${obMode=='link'?'Cancelar':'Usar só neste aparelho'}</button></div></div>`,()=>{
+  const g=$('#ogo');if(g)g.onclick=async()=>{obErr('');obBusy(true,'Aguarde…');try{await signInGoogle();await obAfter()}catch(e){obBusy(false);obErr(authMsg(e.message))}};
+  $('#oem').onclick=()=>obGo('email');$('#oloc').onclick=()=>{if(obMode=='link'){obDone=true;closeOb()}else obGo('name')}});
+ if(sc=='email')return obForm({n:'conta',q:'Qual é o seu e-mail?',h:'Usaremos só para entrar na sua conta.',type:'email',ph:'voce@email.com',ac:'email',value:obTmp.email,back:()=>obGo('auth'),
+  onSubmit:v=>{v=v.trim();if(!/^\S+@\S+\.\S+$/.test(v))return obErr('Digite um e-mail válido.');obTmp.email=v;obGo('pass')}});
+ if(sc=='pass'){const up=obPw=='signup';return obForm({n:'conta',q:up?'Crie uma senha.':'Digite a sua senha.',h:up?'Mínimo de 6 caracteres.':obTmp.email,type:'password',ac:up?'new-password':'current-password',ok:up?'Criar conta':'Entrar',back:()=>obGo('email'),
+  extra:`<button type="button" class="gh" id="otg">${up?'Já tenho conta':'Criar conta'}</button>${up?'':'<button type="button" class="gh" id="ofg">Esqueci a senha</button>'}`,
+  bind:(f,inp)=>{$('#otg').onclick=()=>{obPw=up?'signin':'signup';obGo('pass')};const fg=$('#ofg');
+   if(fg)fg.onclick=async()=>{try{await resetPassword(obTmp.email);obErr('Enviamos um link para redefinir a senha para '+obTmp.email+'.')}catch(e){obErr(authMsg(e.message))}}},
+  onSubmit:async pw=>{if(!pw)return obErr('Digite a senha.');if(up&&pw.length<6)return obErr('A senha precisa ter pelo menos 6 caracteres.');
+   obBusy(true,'Aguarde…');try{up?await signUpEmail(obTmp.email,pw):await signInEmail(obTmp.email,pw);await obAfter()}catch(e){obBusy(false);obErr(authMsg(e.message))}}})}
+ if(PSTEPS.includes(sc)){const i=PSTEPS.indexOf(sc),p=OBP[sc],n=`0${i+1} / 0${PSTEPS.length}`,next=PSTEPS[i+1]||'done',prev=PSTEPS[i-1]||(syncOn()&&!SES&&obMode=='new'?'auth':null);
+  const back=prev?v=>{if(sc!='bday')obTmp[sc]=v.trim();obGo(prev)}:null;
+  if(sc=='bday')return obForm({n,q:p.q,h:p.h,field:dtHTML(),value:obTmp.bday,init:dtInit,back,extra:'<button type="button" class="gh" id="osk">Pular</button>',
+   bind:()=>{$('#osk').onclick=()=>{obTmp.bday='';obGo('done')}},
+   onSubmit:v=>{v=v.trim();if(($$('#ov .dtf input:not([type=hidden])').some(x=>x.value)&&!v)||(v&&(v>ymd()||v<'1900-01-01')))return obErr('Informe uma data válida que não seja no futuro.');obTmp.bday=v;obGo('done')}});
+  return obForm({n,q:p.q,h:p.h,ph:p.p,ac:p.ac,max:p.max,value:obTmp[sc],back,onSubmit:v=>{v=v.trim();if(!v||v.length>p.max)return obErr(sc=='name'?'Digite como quer ser chamado, com até 40 letras.':'Digite o sobrenome, com até 60 letras.');obTmp[sc]=v;obGo(next)}})}
+ if(sc=='done')return obDoneScreen(opt&&opt.back);
+}
+// Depois de entrar na conta: conta com perfil vai direto ao app; conta nova segue para o perfil.
+async function obAfter(){const has=await afterAuth();paintSync();
+ if(has||(obMode=='link'&&prof&&prof.name)){paintProf();obGo('done',{back:true})}else obGo('name')}
+// Tela final. Perfil novo é gravado aqui; "back" = conta existente que só precisa entrar.
+function obDoneScreen(back){if(!back){prof={...(prof||{}),name:obTmp.name,last:obTmp.last,bday:obTmp.bday,spaces:(prof&&prof.spaces)||defaultSpaces()};persistProf();paintProf();if(!notes.length)seedWelcome()}
+ const ok=!!lsGet('noema-profile',null);
+ obShow(`<div class="ovw"><span class="m">pronto</span><h2 class="oq" style="margin-block:18px 38px">${words((back?'Bem-vindo de volta, ':'Prazer, ')+prof.name+'.')}</h2><p class="m">${esc(!ok?'Seu navegador bloqueou o armazenamento: o perfil vale só nesta sessão.':SES?'Sincronizando com '+(SES.email||'sua conta')+'.':'Seu espaço está pronto.')}</p><div class="oact"><button class="obtn" id="oen">Entrar</button></div></div>`,()=>{
+  $('#oen').onclick=()=>{obDone=true;closeOb()};if(ok)setTimeout(()=>{if(!obDone){obDone=true;closeOb()}},2800)})}
+// Cortina: o clip-path sobe e revela o app por baixo.
+function closeOb(){const o=$('#ob'),fin=()=>{o.hidden=true;o.style.cssText='';$('#ov').innerHTML='';document.body.classList.remove('onb');$('#app').inert=false;paintProf();renderNav();renderList();introApp()};
+ if(anim())gsap.fromTo(o,{clipPath:'inset(0% 0 0% 0)'},{clipPath:'inset(0% 0 100% 0)',duration:.9,ease:'power4.inOut',onComplete:fin});else fin()}
+$('#ob').addEventListener('keydown',e=>{if(e.key=='Escape'&&obEdit&&!obDone){obDone=true;closeOb()}});
+// Reduz a fonte da pergunta até a maior palavra caber na largura da tela.
+function fitOb(){const q=$('#ov .oq');if(!q)return;q.style.fontSize='';let s=parseFloat(getComputedStyle(q).fontSize);while(q.scrollWidth>q.clientWidth+1&&s>22){s-=2;q.style.fontSize=s+'px'}}
+</script>
+    <script>
+/* Homepage gráfica: saudação, blocos por espaço, mapa de calor, recentes. */
+// Saudação por horário e contagem regressiva do aniversário.
+function hiHTML(){const n=prof&&prof.name||'',t=new Date(),h=t.getHours(),g=h<5?'Boa madrugada':h<12?'Bom dia':h<18?'Boa tarde':'Boa noite';let b='';
+ if(prof&&prof.bday){const [y,m,d]=prof.bday.split('-').map(Number),y0=t.getFullYear(),td=new Date(y0,t.getMonth(),t.getDate());
+  if(m-1==t.getMonth()&&d==t.getDate())b=`Hoje é seu aniversário. Feliz ${y0-y} anos.`;else{let nx=new Date(y0,m-1,d);if(nx<td)nx=new Date(y0+1,m-1,d);b=Math.round((nx-td)/864e5)+' dias até o seu aniversário'}}
+ return `<div class="hi"><div class="m">${esc(t.toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'}))}</div><h1>${esc(g)}${n?',<br>'+esc(n)+'.':'.'}</h1><p class="m">${b}</p><p class="hk m">Alt+N nova nota · Ctrl+K comandos · Ctrl+. Zen</p></div>`}
+// Home: tudo calculado dos dados reais (atividade por dia, blocos por espaço, recentes).
+function renderHome(a){const H=$('#hm'),live=notes.filter(n=>!n.trash),sp=(prof&&prof.spaces)||[],t0=new Date();t0.setHours(0,0,0,0);
+ const days=[];for(let i=97;i>=0;i--){const d=new Date(t0);d.setDate(d.getDate()-i);days.push(d)}
+ const dk=t=>{const d=new Date(t);return d.getFullYear()*372+d.getMonth()*31+d.getDate()};
+ const cnt=arr=>{const m={};arr.forEach(n=>{const k=dk(n.updated);m[k]=(m[k]||0)+1});return days.map(d=>m[dk(d)]||0)};
+ const all=cnt(live),mx=Math.max(1,...all),pad=days[0].getDay();
+ const tile=(key,label,arr)=>{const c=cnt(arr).slice(-14),m=Math.max(1,...c);return `<button class="tile hx" data-sp="${esc(key)}"><span class="tn">${arr.length}</span><span class="tl">${esc(label)}</span><span class="bars">${c.map(v=>`<i style="height:${4+Math.round(v/m*26)}px;opacity:${v?1:.22}"></i>`).join('')}</span></button>`};
+ const un=live.filter(n=>!n.space);
+ const rec=live.filter(n=>!n.arch&&!n.inbox&&(SP===null||n.space===SP)).sort((x,y)=>y.updated-x.updated).slice(0,5);
+ H.innerHTML=`<div class="hx">${hiHTML()}</div><input id="hcap" class="hx" placeholder="Capturar um pensamento (Enter)" aria-label="Captura rápida">
+ <div class="tiles">${sp.map(s=>tile(s,s,live.filter(n=>n.space===s))).join('')}${un.length?tile('__none','Sem espaço',un):''}</div>
+ <div class="hg hx"><div><div class="m">notas editadas por dia, últimas 14 semanas</div><div class="heat">${Array.from({length:pad},()=>'<i style="visibility:hidden"></i>').join('')}${all.map((v,i)=>`<i title="${days[i].toLocaleDateString('pt-BR')}: ${v}" style="opacity:${v?(.28+.72*v/mx).toFixed(2):.08}"></i>`).join('')}</div></div>
+ <div><div class="m" style="margin-bottom:6px">recentes</div>${rec.map(n=>`<button class="it" data-open="${n.id}"><b>${esc(ttl(n))}</b><span class="s">${esc(n.space||'Sem espaço')}</span></button>`).join('')||'<div class="empty">Nenhuma nota ainda.</div>'}</div></div>`;
+ if(a&&anim())gsap.from('#hm .hx',{y:24,opacity:0,duration:.8,stagger:.08,ease:'power3.out',clearProps:'transform,opacity'})}
+$('#hm').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+ if(b.dataset.sp!==undefined){const v=b.dataset.sp;SP=v=='__none'?'':v;go('all')}
+ else if(b.dataset.open){const n=notes.find(x=>x.id==b.dataset.open);if(!n)return;view=n.inbox?'inbox':'all';renderNav();openN(n.id)}});
+$('#hm').addEventListener('keydown',async e=>{if(e.target.id!='hcap'||e.key!='Enter'||!e.target.value.trim())return;const v=e.target.value.trim(),n=mk({inbox:true,space:SP||'',body:v,html:'<p>'+esc(v)+'</p>'});notes.push(n);await save(n);renderNav();renderHome();$('#hcap').focus()});
+</script>
+    <script>
+/* IA leve: painel com resumo curto e sugestão de tags dos resultados recentes. */
+
+function renderAi(){
+  const H=$('#hm');
+  if(!H)return;
+  const recent=[...notes].filter(n=>!n.trash).sort((a,b)=>b.updated-a.updated).slice(0,5);
+  H.innerHTML=`<section class="ai-panel"><div class="ai-head"><div><span class="eyebrow">assistente leve</span><h1>IA</h1></div></div><div class="ai-grid">${recent.map(aiCard).join('')||'<div class="m">Nenhuma nota ainda.</div>'}</div><div class="ai-actions"><button class="gh" id="ai-refresh">Atualizar prévias</button></div></section>`;
+  const r=$('#ai-refresh');if(r)r.onclick=renderAi;
+}
+
+function aiCard(n){
+  const s=aiSummarize(n);
+  const tags=aiTagSuggestions(n).map(t=>`<span class="ai-tag">${esc(t)}</span>`).join('');
+  return `<article class="ai-card"><h2>${esc(n.title||'Sem título')}</h2><p class="ai-summary">${esc(s)}</p><div class="ai-meta">${n.space||'Sem espaço'} · ${new Date(n.updated).toLocaleDateString('pt-BR')}</div><div class="ai-tags">${tags||'<span class="m">sem sugestão</span>'}</div></article>`;
+}
+</script>
+    <script>
+let calendarCursor = new Date();
+let calendarSelected = "";
+
+const calendarMonthLabel = (date) =>
+  new Intl.DateTimeFormat("pt-BR", { month: "long", year: "numeric" }).format(
+    date,
+  );
+
+const renderCalendar = () => {
+  const year = calendarCursor.getFullYear();
+  const month = calendarCursor.getMonth();
+  const first = new Date(year, month, 1);
+  const days = new Date(year, month + 1, 0).getDate();
+  const offset = (first.getDay() + 6) % 7;
+  const today = calendarKey(new Date());
+  const selected = calendarSelected || today;
+  const cells = [];
+
+  for (let i = 0; i < offset; i += 1)
+    cells.push('<div class="calendar-day is-empty"></div>');
+  for (let day = 1; day <= days; day += 1) {
+    const key = calendarKey(new Date(year, month, day));
+    const items = calendarItemsOn(key);
+    cells.push(
+      `<button class="calendar-day${key == today ? " is-today" : ""}${key == selected ? " is-selected" : ""}" data-calendar-day="${key}"><b>${day}</b>${items.length ? `<span>${items.length} item${items.length == 1 ? "" : "s"}</span>` : ""}</button>`,
+    );
+  }
+
+  const selectedItems = calendarItemsOn(selected);
+  $("#hm").innerHTML = `<section class="calendar-panel" aria-label="Calendário">
+    <header class="calendar-head"><div><span class="eyebrow">agenda</span><h1>${calendarMonthLabel(calendarCursor)}</h1></div>
+      <div class="calendar-actions"><button class="gh" data-calendar-nav="prev" aria-label="Mês anterior">←</button><button class="gh" data-calendar-nav="today">Hoje</button><button class="gh" data-calendar-nav="next" aria-label="Próximo mês">→</button></div>
+    </header>
+    <div class="calendar-weekdays">${["seg", "ter", "qua", "qui", "sex", "sáb", "dom"].map((day) => `<span>${day}</span>`).join("")}</div>
+    <div class="calendar-grid">${cells.join("")}</div>
+    <section class="calendar-items"><h2>${new Intl.DateTimeFormat("pt-BR", { dateStyle: "full" }).format(new Date(`${selected}T12:00:00`))}</h2>${selectedItems.length ? selectedItems.map((item) => `<article class="calendar-item"><span class="calendar-kind">${item.kind == "task" ? "tarefa" : "nota"}</span><strong>${esc(item.title)}</strong></article>`).join("") : '<p class="m">Nenhum item neste dia.</p>'}</section>
+  </section>`;
+};
+
+$("#hm").onclick = (event) => {
+  const day = event.target.closest("[data-calendar-day]");
+  if (day) {
+    calendarSelected = day.dataset.calendarDay;
+    renderCalendar();
+    return;
+  }
+  const action = event.target.closest("[data-calendar-nav]")?.dataset
+    .calendarNav;
+  if (!action) return;
+  if (action == "today") calendarCursor = new Date();
+  else
+    calendarCursor.setMonth(
+      calendarCursor.getMonth() + (action == "next" ? 1 : -1),
+    );
+  calendarSelected = "";
+  renderCalendar();
+};
+</script>
+    <script>
+let graphZoom = 1;
+
+const renderGraph = () => {
+  const { nodes, edges } = graphData();
+  const width = 900;
+  const height = Math.max(360, Math.ceil(nodes.length / 4) * 150);
+  const positions = Object.fromEntries(
+    nodes.map((node, index) => [
+      node.id,
+      { x: 120 + (index % 4) * 220, y: 80 + Math.floor(index / 4) * 130 },
+    ]),
+  );
+  const lines = edges
+    .map((edge) => {
+      const from = positions[edge.from];
+      const to = positions[edge.to];
+      return from && to
+        ? `<line x1="${from.x}" y1="${from.y}" x2="${to.x}" y2="${to.y}" />`
+        : "";
+    })
+    .join("");
+  const points = nodes
+    .map((node) => {
+      const point = positions[node.id];
+      return `<g class="graph-node ${node.kind}" data-graph-node="${node.id}" transform="translate(${point.x} ${point.y})"><circle r="24"></circle><text y="43" text-anchor="middle">${esc(node.title.slice(0, 24))}</text></g>`;
+    })
+    .join("");
+  $("#hm").innerHTML =
+    `<section class="graph-panel"><header class="graph-head"><div><span class="eyebrow">conexões</span><h1>Grafo</h1></div><div class="graph-actions"><button class="gh" data-graph-zoom="out" aria-label="Diminuir zoom">−</button><button class="gh" data-graph-zoom="reset">100%</button><button class="gh" data-graph-zoom="in" aria-label="Aumentar zoom">+</button></div></header>${nodes.length ? `<div class="graph-stage"><svg viewBox="0 0 ${width} ${height}" role="img" aria-label="Relações entre notas e tarefas"><g transform="scale(${graphZoom})"><g class="graph-edges">${lines}</g>${points}</g></svg></div>` : '<p class="m">Crie notas ou tarefas para visualizar relações.</p>'}</section>`;
+};
+
+$("#hm").addEventListener("click", (event) => {
+  const zoom = event.target.closest("[data-graph-zoom]")?.dataset.graphZoom;
+  if (zoom) {
+    graphZoom =
+      zoom == "reset"
+        ? 1
+        : Math.max(
+            0.7,
+            Math.min(1.6, graphZoom + (zoom == "in" ? 0.15 : -0.15)),
+          );
+    renderGraph();
+    return;
+  }
+  const node = event.target.closest("[data-graph-node]");
+  if (!node) return;
+  const [kind, id] = node.dataset.graphNode.split(":");
+  if (kind == "note") openN(id);
+  else {
+    view = "tasks";
+    document.body.classList.add("home", "tasks");
+    renderNav();
+    renderTasks();
+  }
+});
+</script>
+    <script>
+let sketchCanvas = null;
+let sketchContext = null;
+let sketchDrawing = false;
+let sketchColor = "#222222";
+let sketchWidth = 4;
+
+const openCanvas = () => {
+  if (!$("#sketch")) {
+    document.body.insertAdjacentHTML(
+      "beforeend",
+      `<dialog id="sketch" aria-label="Canvas de rascunho"><form method="dialog" class="sketch-modal"><header><h2>Rascunho</h2><button class="gh" value="cancel" aria-label="Fechar">×</button></header><div class="sketch-tools"><label>Cor <input id="sketch-color" type="color" value="${sketchColor}"></label><label>Largura <input id="sketch-width" type="range" min="1" max="28" value="${sketchWidth}"></label><button class="gh" type="button" id="sketch-clear">Limpar</button><button class="gh" type="button" id="sketch-print">Exportar</button></div><canvas id="sketch-board" width="1000" height="600"></canvas></form></dialog>`,
+    );
+    sketchCanvas = $("#sketch-board");
+    sketchContext = sketchCanvas.getContext("2d");
+    sketchContext.lineCap = "round";
+    sketchCanvas.addEventListener("pointerdown", (event) => {
+      sketchDrawing = true;
+      sketchCanvas.setPointerCapture(event.pointerId);
+      sketchContext.beginPath();
+      sketchContext.moveTo(event.offsetX, event.offsetY);
+    });
+    sketchCanvas.addEventListener("pointermove", (event) => {
+      if (!sketchDrawing) return;
+      sketchContext.strokeStyle = sketchColor;
+      sketchContext.lineWidth = sketchWidth;
+      sketchContext.lineTo(event.offsetX, event.offsetY);
+      sketchContext.stroke();
+    });
+    sketchCanvas.addEventListener("pointerup", () => {
+      sketchDrawing = false;
+    });
+    $("#sketch-color").oninput = (event) => {
+      sketchColor = event.target.value;
+    };
+    $("#sketch-width").oninput = (event) => {
+      sketchWidth = +event.target.value;
+    };
+    $("#sketch-clear").onclick = () =>
+      sketchContext.clearRect(0, 0, sketchCanvas.width, sketchCanvas.height);
+    $("#sketch-print").onclick = () => {
+      const printWindow = open("", "_blank");
+      printWindow.document.write(
+        `<img src="${sketchCanvas.toDataURL("image/png")}" style="max-width:100%">`,
+      );
+      printWindow.print();
+    };
+  }
+  $("#sketch").showModal();
+};
+</script>
+    <script>
+/* Painel de tarefas: criação, edição, status, favoritos e filtro local. */
+let taskQ = "",
+  taskStatus = "all",
+  taskEdit = null;
+const taskStatusLabel = {
+  todo: "A fazer",
+  doing: "Em andamento",
+  done: "Concluída",
+};
+function renderTasks() {
+  const H = $("#hm");
+  if (!H) return;
+  const rows = tasks
+    .filter((t) => matchT(t, taskQ, taskStatus))
+    .sort(
+      (a, b) =>
+        (a.status == "done") - (b.status == "done") || b.updated - a.updated,
+    );
+  const edit = taskEdit && tasks.find((t) => t.id == taskEdit);
+  const form = edit
+    ? `<input id="task-title" value="${esc(edit.title)}" placeholder="Título da tarefa" aria-label="Título da tarefa"><textarea id="task-body" placeholder="Detalhes" aria-label="Detalhes">${esc(edit.body)}</textarea><div class="task-fields"><select id="task-status" aria-label="Status">${Object.entries(
+        taskStatusLabel,
+      )
+        .map(
+          ([k, v]) =>
+            `<option value="${k}" ${edit.status == k ? "selected" : ""}>${v}</option>`,
+        )
+        .join(
+          "",
+        )}</select><input id="task-due" type="date" value="${esc(edit.due)}" aria-label="Prazo"><button class="gh" id="task-save">Salvar</button><button class="gh" id="task-cancel">Cancelar</button></div>`
+    : `<input id="task-title" placeholder="Nova tarefa" aria-label="Título da tarefa"><textarea id="task-body" placeholder="Detalhes (opcional)" aria-label="Detalhes"></textarea><div class="task-fields"><select id="task-status" aria-label="Status">${Object.entries(
+        taskStatusLabel,
+      )
+        .map(([k, v]) => `<option value="${k}">${v}</option>`)
+        .join(
+          "",
+        )}</select><input id="task-due" type="date" aria-label="Prazo"><button class="gh" id="task-save">Adicionar</button></div>`;
+  H.innerHTML = `<section class="tasks-panel"><div class="tasks-head"><div><div class="m">organização</div><h1>Tarefas</h1></div><span class="m" role="status">${rows.length} ${rows.length == 1 ? "tarefa" : "tarefas"}</span></div><div class="task-form">${form}</div><div class="task-tools"><input id="task-query" type="search" value="${esc(taskQ)}" placeholder="Filtrar tarefas" aria-label="Filtrar tarefas"><select id="task-filter" aria-label="Filtrar por status"><option value="all" ${taskStatus == "all" ? "selected" : ""}>Todos os status</option>${Object.entries(
+    taskStatusLabel,
+  )
+    .map(
+      ([k, v]) =>
+        `<option value="${k}" ${taskStatus == k ? "selected" : ""}>${v}</option>`,
+    )
+    .join(
+      "",
+    )}</select></div><div class="task-list">${rows.length ? rows.map(taskRow).join("") : '<div class="empty">Nenhuma tarefa neste filtro.</div>'}</div></section>`;
+  const ql = $("#task-query");
+  ql.oninput = (e) => {
+    taskQ = e.target.value;
+    renderTasks();
+    $("#task-query").focus();
+    $("#task-query").setSelectionRange(taskQ.length, taskQ.length);
+  };
+  $("#task-filter").onchange = (e) => {
+    taskStatus = e.target.value;
+    renderTasks();
+  };
+  $("#task-save").onclick = saveTaskForm;
+  $("#task-cancel")?.addEventListener("click", () => {
+    taskEdit = null;
+    renderTasks();
+  });
+}
+function taskRow(t) {
+  return `<article class="task-row ${t.status == "done" ? "is-done" : ""}" data-task="${t.id}"><button class="task-check" data-task-action="status" aria-label="Marcar como ${t.status == "done" ? "a fazer" : "concluída"}" aria-pressed="${t.status == "done"}">${t.status == "done" ? "✓" : ""}</button><div class="task-copy"><button class="task-title" data-task-action="edit">${esc(t.title || "Sem título")}</button>${t.body ? `<p>${esc(t.body)}</p>` : ""}<div class="m">${taskStatusLabel[t.status]}${t.due ? " · prazo " + isoToBr(t.due) : ""}</div></div><button class="task-fav" data-task-action="fav" aria-label="${t.fav ? "Remover dos favoritos" : "Favoritar"}">${t.fav ? "★" : "☆"}</button><button class="task-remove" data-task-action="remove" aria-label="Excluir tarefa">×</button></article>`;
+}
+async function saveTaskForm() {
+  const title = $("#task-title").value.trim();
+  if (!title) {
+    $("#task-title").focus();
+    return;
+  }
+  const old = taskEdit && tasks.find((t) => t.id == taskEdit),
+    t = old || taskMk({});
+  Object.assign(t, {
+    title,
+    body: $("#task-body").value.trim(),
+    status: $("#task-status").value,
+    due: $("#task-due").value,
+    updated: Date.now(),
+  });
+  if (await taskSave(t)) {
+    if (!old) tasks.push(t);
+    taskEdit = null;
+    renderNav();
+    renderTasks();
+  }
+}
+$("#hm").addEventListener("click", async (e) => {
+  if (view != "tasks") return;
+  const b = e.target.closest("[data-task-action]");
+  if (!b) return;
+  const t = tasks.find((x) => x.id == b.closest("[data-task]")?.dataset.task);
+  if (!t) return;
+  const a = b.dataset.taskAction;
+  if (a == "edit") {
+    taskEdit = t.id;
+    return renderTasks();
+  }
+  if (a == "status") {
+    t.status =
+      t.status == "done" ? "todo" : t.status == "todo" ? "doing" : "done";
+  }
+  if (a == "fav") t.fav = !t.fav;
+  if (a == "remove") {
+    if (!confirm("Excluir esta tarefa?")) return;
+    await taskRemove(t.id);
+    tasks = tasks.filter((x) => x.id != t.id);
+    if (taskEdit == t.id) taskEdit = null;
+    renderNav();
+    return renderTasks();
+  }
+  t.updated = Date.now();
+  await taskSave(t);
+  renderNav();
+  renderTasks();
+});
+</script>
+    <script>
+/* Painel de lembretes: próximos prazos agrupados por data e descartáveis. */
+let reminderQ = "",
+  reminderPriority = "all",
+  reminderEdit = null,
+  reminderShowDiscarded = false;
+const reminderPriorityLabel = { low: "Baixa", normal: "Normal", high: "Alta" };
+function renderReminders() {
+  const H = $("#hm");
+  if (!H) return;
+  const rows = reminders
+    .filter((r) =>
+      reminderFilter(r, reminderQ, reminderPriority, !reminderShowDiscarded),
+    )
+    .sort(
+      (a, b) =>
+        (a.date || "9999").localeCompare(b.date || "9999") ||
+        b.updated - a.updated,
+    );
+  const edit = reminderEdit && reminders.find((r) => r.id == reminderEdit);
+  const groups = {};
+  rows.forEach((r) => (groups[r.date || "sem-data"] ||= []).push(r));
+  H.innerHTML = `<section class="reminders-panel"><div class="reminders-head"><div><div class="m">atenção</div><h1>Lembretes</h1></div><span class="m" role="status">${rows.length} ${rows.length == 1 ? "lembrete" : "lembretes"}</span></div><div class="reminder-form">${reminderForm(edit)}</div><div class="reminder-tools"><input id="reminder-query" type="search" value="${esc(reminderQ)}" placeholder="Filtrar lembretes" aria-label="Filtrar lembretes"><select id="reminder-filter-priority" aria-label="Filtrar por prioridade"><option value="all" ${reminderPriority == "all" ? "selected" : ""}>Todas as prioridades</option>${Object.entries(
+    reminderPriorityLabel,
+  )
+    .map(
+      ([k, v]) =>
+        `<option value="${k}" ${reminderPriority == k ? "selected" : ""}>${v}</option>`,
+    )
+    .join(
+      "",
+    )}</select><label class="reminder-toggle"><input id="reminder-discarded" type="checkbox" ${reminderShowDiscarded ? "checked" : ""}> descartados</label></div><div class="reminder-list">${
+    Object.keys(groups).length
+      ? Object.entries(groups)
+          .map(
+            ([date, list]) =>
+              `<section class="reminder-day"><h2>${date == "sem-data" ? "Sem data" : esc(reminderDateLabel(date))}</h2>${list.map(reminderRow).join("")}</section>`,
+          )
+          .join("")
+      : '<div class="empty">Nenhum lembrete neste filtro.</div>'
+  }</div></section>`;
+  const q = $("#reminder-query");
+  q.oninput = (e) => {
+    reminderQ = e.target.value;
+    renderReminders();
+    $("#reminder-query").focus();
+    $("#reminder-query").setSelectionRange(reminderQ.length, reminderQ.length);
+  };
+  $("#reminder-filter-priority").onchange = (e) => {
+    reminderPriority = e.target.value;
+    renderReminders();
+  };
+  $("#reminder-discarded").onchange = (e) => {
+    reminderShowDiscarded = e.target.checked;
+    renderReminders();
+  };
+  $("#reminder-save").onclick = saveReminderForm;
+  $("#reminder-cancel")?.addEventListener("click", () => {
+    reminderEdit = null;
+    renderReminders();
+  });
+}
+function reminderForm(r) {
+  const fresh = !r;
+  r ||= reminderMk({ date: ymd() });
+  return `<input id="reminder-title" value="${fresh ? "" : esc(r.title)}" placeholder="${fresh ? "Novo lembrete" : "Título do lembrete"}" aria-label="Título do lembrete"><textarea id="reminder-body" placeholder="Detalhes (opcional)" aria-label="Detalhes">${fresh ? "" : esc(r.body)}</textarea><div class="reminder-fields"><input id="reminder-date" type="date" value="${esc(r.date)}" aria-label="Data do lembrete"><select id="reminder-form-priority" aria-label="Prioridade">${Object.entries(
+    reminderPriorityLabel,
+  )
+    .map(
+      ([k, v]) =>
+        `<option value="${k}" ${r.priority == k ? "selected" : ""}>${v}</option>`,
+    )
+    .join(
+      "",
+    )}</select><button class="gh" id="reminder-save">${fresh ? "Adicionar" : "Salvar"}</button>${fresh ? "" : '<button class="gh" id="reminder-cancel">Cancelar</button>'}</div>`;
+}
+function reminderRow(r) {
+  return `<article class="reminder-row ${r.active ? "" : "is-discarded"}" data-reminder="${r.id}"><span class="reminder-priority priority-${r.priority}" title="Prioridade ${reminderPriorityLabel[r.priority]}"></span><div class="reminder-copy"><button class="reminder-title" data-reminder-action="edit">${esc(r.title || "Sem título")}</button>${r.body ? `<p>${esc(r.body)}</p>` : ""}<div class="m">${reminderPriorityLabel[r.priority]}${r.active ? "" : " · descartado"}</div></div>${r.active ? '<button class="gh" data-reminder-action="discard">Descartar</button>' : '<button class="gh" data-reminder-action="restore">Restaurar</button>'}</article>`;
+}
+function reminderDateLabel(date) {
+  const d = new Date(`${date}T12:00:00`);
+  return Number.isNaN(d.getTime())
+    ? date
+    : d.toLocaleDateString("pt-BR", {
+        weekday: "long",
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      });
+}
+async function saveReminderForm() {
+  const title = $("#reminder-title").value.trim();
+  if (!title) return $("#reminder-title").focus();
+  const old = reminderEdit && reminders.find((r) => r.id == reminderEdit),
+    r = old || reminderMk({});
+  Object.assign(r, {
+    title,
+    body: $("#reminder-body").value.trim(),
+    date: $("#reminder-date").value,
+    priority: $("#reminder-form-priority").value,
+    updated: Date.now(),
+  });
+  if (await reminderSave(r)) {
+    if (!old) reminders.push(r);
+    reminderEdit = null;
+    renderNav();
+    renderReminders();
+  }
+}
+$("#hm").addEventListener("click", async (e) => {
+  if (view != "reminders") return;
+  const b = e.target.closest("[data-reminder-action]");
+  if (!b) return;
+  const r = reminders.find(
+    (x) => x.id == b.closest("[data-reminder]")?.dataset.reminder,
+  );
+  if (!r) return;
+  const a = b.dataset.reminderAction;
+  if (a == "edit") {
+    reminderEdit = r.id;
+    return renderReminders();
+  }
+  r.active = a == "restore";
+  r.updated = Date.now();
+  await reminderSave(r);
+  renderNav();
+  renderReminders();
+});
+</script>
+    <script>
+/* Gerenciador de espaços (Escola, Trabalho...). */
+function openSpaces(){if(!prof)return;renderSL();$('#sd').showModal()}
+function renderSL(){$('#sl').innerHTML=prof.spaces.map((s,i)=>`<div class="sr"><input value="${esc(s)}" data-i="${i}" maxlength="24" aria-label="Nome do espaço"><button class="gh d" data-rm="${i}">Remover</button></div>`).join('')||'<p class="m">Nenhum espaço ainda.</p>'}
+$('#sl').addEventListener('change',async e=>{const i=+e.target.dataset.i,old=prof.spaces[i],nv=e.target.value.trim();
+ if(!nv||prof.spaces.some((s,j)=>j!=i&&s.toLowerCase()==nv.toLowerCase())){e.target.value=old;return}
+ prof.spaces[i]=nv;await Promise.all(notes.filter(n=>n.space===old).map(n=>{n.space=nv;n.updated=Date.now();n.dirty=true;return save(n)}));if(SP===old)SP=nv;persistProf();renderNav();renderList();if(view=='home')renderHome()});
+$('#sl').addEventListener('click',async e=>{const b=e.target.closest('[data-rm]');if(!b)return;if(!b.dataset.arm){b.dataset.arm=1;b.textContent='Confirmar remoção';return}
+ const old=prof.spaces[+b.dataset.rm];prof.spaces.splice(+b.dataset.rm,1);await Promise.all(notes.filter(n=>n.space===old).map(n=>{n.space='';n.updated=Date.now();n.dirty=true;return save(n)}));if(SP===old)SP=null;persistProf();renderSL();renderNav();renderList();if(view=='home')renderHome()});
+$('#sn').addEventListener('keydown',e=>{if(e.key!='Enter')return;e.preventDefault();const v=e.target.value.trim();if(!v||prof.spaces.some(s=>s.toLowerCase()==v.toLowerCase()))return;prof.spaces.push(v);e.target.value='';persistProf();renderSL();renderNav();if(view=='home')renderHome()});
+$('#sx').onclick=()=>$('#sd').close();
+</script>
+    <script>
+/* Configurações em modal: aparência (tema, animações), conta e sincronização, perfil, espaços e dados. */
+let sgLogout=false,sgMsg='';
+function openSettings(){sgLogout=false;sgMsg='';renderSettings();$('#sg').showModal()}
+const sgBtn=(act,val,label,on)=>`<button class="fc" data-st="${act}" data-x="${val}" aria-pressed="${on}">${label}</button>`;
+// Caixa de confirmação de saída (nunca sai sem perguntar o que fazer com os dados deste aparelho).
+const sgOutBox=()=>{const p=pendingCount();return `<div class="sgx"><p class="sgp">${p?`Há <b>${p}</b> alteração(ões) ainda não enviada(s). Vou tentar enviar antes de sair.`:'Tudo já está sincronizado.'}</p><div class="fr"><button class="gh d" data-st="out-wipe">Sair e apagar dados deste aparelho</button><button class="gh" data-st="out-keep">Sair e manter dados aqui</button><button class="gh" data-st="out-no">Cancelar</button></div><p class="m sgp">Apagar remove as notas só deste aparelho; as da conta continuam na nuvem.</p></div>`};
+function renderSettings(){const th=document.documentElement.dataset.theme=='light'?'light':'dark',p=prof||{};let acc;
+ if(!syncOn())acc='<p class="m sgp">Sincronização não configurada nesta versão: suas notas ficam só neste aparelho. Para ativar conta Google ou e-mail, configure o Firebase (veja docs/README.md).</p>';
+ else if(!SES)acc='<p class="m sgp">Você usa o NOEMA só neste aparelho.</p><div class="fr"><button class="gh" data-st="login">Entrar para sincronizar</button></div>';
+ else acc=`<p class="sgp"><b>${esc(SES.email||'conta')}</b><span class="m"> · ${SES.provider=='google'?'Google':'e-mail e senha'}</span></p><p class="m sgp" id="sgs">${esc(syncText())}</p><div class="fr"><button class="gh" data-st="sync">Sincronizar agora</button><button class="gh d" data-st="logout">Sair</button></div>`+(sgLogout?sgOutBox():'');
+ $('#sgb').innerHTML=`<section><h3 class="sgt">Aparência</h3><div class="sgr"><span>Tema</span><div class="fr">${sgBtn('theme','dark','AMOLED',th=='dark')}${sgBtn('theme','light','Claro',th=='light')}</div></div><div class="sgr"><span>Animações</span><div class="fr">${sgBtn('motion','on','Sim',motionPref=='on')}${sgBtn('motion','auto','Auto',motionPref=='auto')}${sgBtn('motion','off','Não',motionPref=='off')}</div></div></section>
+ <section><h3 class="sgt">Conta</h3>${acc}</section>
+ <section><h3 class="sgt">Perfil</h3><div class="sgf"><label class="m">Nome<input id="sgn" maxlength="40" autocomplete="given-name" value="${esc(p.name||'')}"></label><label class="m">Sobrenome<input id="sgl" maxlength="60" autocomplete="family-name" value="${esc(p.last||'')}"></label></div><div class="m" style="margin:12px 0 2px">Aniversário</div>${dtHTML().replace('class="dtf"','class="dtf sgd"').replace('id="oi"','id="sgoi"').replace('id="dd1"','id="sgd1"').replace('id="dd2"','id="sgd2"').replace('id="dd3"','id="sgd3"')}<div class="fr" style="margin-top:10px"><button class="gh" data-st="saveprof">Salvar perfil</button><span class="m" id="sgm" role="status">${esc(sgMsg)}</span></div></section>
+ <section><h3 class="sgt">Espaços e dados</h3><div class="fr"><button class="gh" data-st="spaces">Gerenciar espaços</button><button class="gh" data-st="backup">Backup (JSON)</button></div></section>`;
+ const h=$('#sgoi');if(h){h.value=p.bday||'';dtInit(h)}}
+// Tema: atributo data-theme na raiz (o canvas do fundo observa a mudança).
+function sgSaveProfile(){const n=$('#sgn').value.trim(),l=$('#sgl').value.trim(),b=$('#sgoi').value;
+ if(!n||!l)return sgMsg='Preencha nome e sobrenome.';
+ if($$('#sg .dtf input:not([type=hidden])').some(x=>x.value)&&!b||(b&&(b>ymd()||b<'1900-01-01')))return sgMsg='Data de aniversário inválida.';
+ prof={...(prof||{}),name:n,last:l,bday:b};persistProf();paintProf();if(view=='home')renderHome();if(!cur)renderEd();return sgMsg='Perfil salvo.'}
+async function sgSignOut(wipe){sgMsg='';$('#sgb').insertAdjacentHTML('afterbegin','<p class="m sgp" role="status">Saindo…</p>');
+ await syncNow();
+ if(wipe&&pendingCount()){sgLogout=true;renderSettings();$('#sgm').textContent='';return $('#sgb').insertAdjacentHTML('afterbegin','<p class="sgp" style="color:#c0392b" role="alert">Não consegui enviar tudo. Conecte-se à internet ou escolha "manter dados aqui".</p>')}
+ await logout(wipe);$('#sg').close();view='home';SP=null;document.body.classList.add('home');
+ if(wipe){boot()}else{renderNav();renderList();if(view=='home')renderHome()}}
+$('#sgb').addEventListener('click',async e=>{const b=e.target.closest('[data-st]');if(!b)return;const a=b.dataset.st,x=b.dataset.x;
+ if(a=='theme')setTheme(x);else if(a=='motion')setMotion(x);
+ else if(a=='login'){$('#sg').close();return runOb('link')}
+ else if(a=='sync'){syncNow();return}
+ else if(a=='logout')sgLogout=true;else if(a=='out-no')sgLogout=false;
+ else if(a=='out-keep')return sgSignOut(false);else if(a=='out-wipe')return sgSignOut(true);
+ else if(a=='saveprof')sgSaveProfile();
+ else if(a=='spaces'){$('#sg').close();return openSpaces()}
+ else if(a=='backup'){$('#sg').close();return openData('','Cole um JSON aqui para importar, ou gere o backup.')}
+ renderSettings()});
+$('#sgx').onclick=()=>$('#sg').close();
+$('#bset').onclick=openSettings;
+</script>
+    <script>
+/* Paleta de comandos (Ctrl+K) com busca incremental. */
+// Comandos da paleta; as notas existentes também entram como comandos.
+const cmds=()=>[['Ir para Início','',()=>go('home')],...((prof&&prof.spaces)||[]).map(s=>['Espaço: '+s,'',()=>{SP=s;go(view=='home'?'all':view)}]),['Todos os espaços','',()=>{SP=null;go(view=='home'?'all':view)}],['Gerenciar espaços','',openSpaces],['Nova nota','Alt+N',newNote],['Exportar nota (PDF, TXT, JSON)','',()=>{if(cur)openExport()}],['Modo Zen','Ctrl+.',toggleZen],['Nova captura','',()=>{go('inbox');setTimeout(()=>$('#cap').focus(),0)}],...VIEWS.map(([k,l])=>['Ir para '+l,'',()=>go(k)]),['Configurações','',openSettings],['Alternar animações','',cycleMotion],['Alternar tema','',toggleTheme],['Backup (exportar ou importar JSON)','',()=>openData('','Cole um JSON aqui para importar, ou gere o backup.')],['Sincronizar agora','',()=>syncNow()],
+['Resumo com IA','',()=>{view='ai';renderNav();renderAi()}],
+ ...notes.filter(n=>!n.trash).map(n=>['Abrir: '+ttl(n),'',()=>{view=n.arch?'archive':n.inbox?'inbox':'all';renderNav();openN(n.id)}])];
+function renderPal(){const t=$('#pi').value.toLowerCase();shown=cmds().filter(c=>c[0].toLowerCase().includes(t)).slice(0,9);pIdx=Math.min(pIdx,Math.max(shown.length-1,0));
+ $('#pl').innerHTML=shown.map((c,i)=>`<button role="option" data-i="${i}" aria-selected="${i==pIdx}"><span>${esc(c[0])}</span><span class="m">${c[1]}</span></button>`).join('')||'<div class="empty">Nenhum resultado.</div>'}
+function runP(i){const c=shown[i];$('#pal').close();if(c)c[2]()}
+$('#pi').oninput=()=>{pIdx=0;renderPal()};
+$('#pi').onkeydown=e=>{if(e.key=='ArrowDown'){pIdx=Math.min(pIdx+1,shown.length-1);e.preventDefault()}else if(e.key=='ArrowUp'){pIdx=Math.max(pIdx-1,0);e.preventDefault()}else if(e.key=='Enter'){runP(pIdx);return}else return;renderPal()};
+$('#pl').onclick=e=>{const b=e.target.closest('button');if(b)runP(+b.dataset.i)};
+</script>
+    <script>
+/* Alternância de tema claro / AMOLED. */
+// Aplica o tema (data-theme na raiz) e guarda a escolha. O canvas do fundo observa esse atributo.
+function setTheme(t){document.documentElement.dataset.theme=t;try{localStorage.setItem('noema-theme',t)}catch(e){}}
+// Alterna entre o tema AMOLED (padrão) e o claro.
+function toggleTheme(){setTheme(document.documentElement.dataset.theme!='light'?'light':'dark');if(typeof renderSettings=='function'&&$('#sg').open)renderSettings()}
+</script>
+    <script>
+/* Animações GSAP de entrada de telas, listas e editor. */
+function introApp(){if(view=='home')renderHome(true);if(!cur)renderEd();if(!anim())return;gsap.from('nav .logo,#nv button,nav h3,#tags button,nav>button',{y:10,opacity:0,duration:.6,stagger:.03,ease:'power3.out',clearProps:'transform,opacity'});animList()}
+function animList(){if(anim())gsap.from('#lp .it',{y:10,opacity:0,duration:.45,stagger:.035,ease:'power2.out',clearProps:'transform,opacity'})}
+function animEd(){if(!cur||lastEd==cur.id||!anim())return;lastEd=cur.id;gsap.from('#ed>*:not(.tb)',{y:14,opacity:0,duration:.55,stagger:.05,ease:'power3.out',clearProps:'transform,opacity'})}
+function animHi(){if(anim())gsap.from('.hi>*',{y:24,opacity:0,duration:.9,stagger:.1,ease:'power3.out',clearProps:'transform,opacity'})}
+</script>
+    <script>
+/* Fundo infinito de dobras de seda desenhado em canvas. */
+// Fundo infinito: dobras de seda desenhadas numa área rotacionada maior que a tela (sem pontas visíveis).
+(function(){const c=$('#sk'),x=c.getContext('2d'),RMq={get matches(){return !motionOn()}};let w=1,h=1,last=0,k=0,P=null;
+ const PD={hi:[48,48,53],lo:[2,2,3],rim:.66,rc:'255,255,255'},PL={hi:[218,216,210],lo:[247,246,243],rim:.34,rc:'110,106,98'};
+ function draw(ts){if(!P||!(k++%30))P=document.documentElement.dataset.theme=='light'?PL:PD;
+  const T=ts/1000,L=Math.hypot(w,h)/2+70,N=Math.max(8,Math.ceil(2*L/130)),sp=2*L/N,st=14;
+  x.setTransform(c.width/w,0,0,c.height/h,0,0);x.clearRect(0,0,w,h);x.translate(w/2,h/2);x.rotate(-.42);
+  for(let i=-2;i<=N;i++){
+   const Y=-L+i*sp,A=sp*(.6+.4*Math.sin(i*.83+1.3)),f1=.0019*(1+.22*Math.sin(i*.61)),f2=.0043*(1+.18*Math.cos(i*.47)),p1=i*.34+T*.21,p2=-i*.52+T*.16,pts=[];
+   for(let px=-L;px<=L+st;px+=st)pts.push(px,Y+A*Math.sin(px*f1+p1)+A*.42*Math.sin(px*f2+p2));
+   const trace=()=>{x.beginPath();x.moveTo(pts[0],pts[1]);for(let j=2;j<pts.length-2;j+=2)x.quadraticCurveTo(pts[j],pts[j+1],(pts[j]+pts[j+2])/2,(pts[j+1]+pts[j+3])/2);x.lineTo(pts[pts.length-2],pts[pts.length-1])};
+   const b=.5+.5*Math.sin(i*.9+.4),cl=P.lo.map((v,n)=>Math.round(v+(P.hi[n]-v)*(.5+.5*b)));
+   const g=x.createLinearGradient(0,Y-A,0,Y+A+sp*1.5);g.addColorStop(0,'rgb('+cl+')');g.addColorStop(1,'rgb('+P.lo+')');
+   trace();for(let j=pts.length-2;j>=0;j-=2)x.lineTo(pts[j],pts[j+1]+sp*4.2);x.closePath();x.fillStyle=g;x.fill();
+   const sg=x.createLinearGradient(-L,0,L,0);for(let s=0;s<=24;s++){const px=-L+s/24*2*L;sg.addColorStop(s/24,'rgba('+P.rc+','+(Math.pow(.5+.5*Math.sin(px*.0026+i*1.1+T*.12),6)*P.rim).toFixed(3)+')')}
+   trace();x.strokeStyle=sg;x.lineWidth=1.25;x.stroke()}}
+ function rs(){const r=c.getBoundingClientRect(),d=Math.min(devicePixelRatio||1,1.25);w=r.width||innerWidth;h=r.height||innerHeight;c.width=Math.max(1,Math.round(w*d));c.height=Math.max(1,Math.round(h*d));draw(performance.now())}
+ const frame=ts=>{if(!document.hidden&&!RMq.matches&&ts-last>=33){last=ts;draw(ts)}requestAnimationFrame(frame)};
+ new ResizeObserver(rs).observe(c);addEventListener('resize',rs);addEventListener('orientationchange',()=>setTimeout(rs,200));
+ new MutationObserver(()=>{P=null;if(RMq.matches)draw(performance.now())}).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+ rs();requestAnimationFrame(frame)})();
+</script>
+    <script>
+/* Atalhos globais de teclado. */
+// Atalhos globais: Ctrl+K, Alt+N, Ctrl+. e Esc (ignorados durante a criação de perfil).
+addEventListener('keydown',e=>{if(document.body.classList.contains('onb'))return;const k=e.key.toLowerCase();
+ if((e.ctrlKey||e.metaKey)&&k=='k'){e.preventDefault();$('#pi').value='';pIdx=0;renderPal();$('#pal').showModal()}
+ else if(e.altKey&&k=='n'){e.preventDefault();newNote()}
+ else if((e.ctrlKey||e.metaKey)&&k=='.'){e.preventDefault();toggleZen()}
+ else if(k=='escape'&&document.body.classList.contains('zen')&&!$('#pal').open&&!$('#dd').open)toggleZen()});
+</script>
+    <script>
+/* Inicialização: carrega dados, perfil, abre a primeira tela. */
+function boot() {
+  if (prof && prof.name) closeOb();
+  else runOb(false);
+}
+addEventListener("resize", () => {
+  if (!$("#ob").hidden) fitOb();
+  closeCP();
+});
+addEventListener("beforeunload", () => {
+  if (cur && saved != ver) save(cur);
+});
+// Nota de boas-vindas (só quando não há nenhuma nota).
+async function seedWelcome() {
+  if (!db) return;
+  const n = mk({
+    title: "Bem-vindo ao Noema",
+    body: "Capture na Inbox, organize aqui e ligue ideias com [[Nome de outra nota]].",
+    html: "<h1>Escreva</h1><p>Capture na Inbox, organize aqui e ligue ideias com [[Nome de outra nota]].</p><h2>Formate</h2><p>Selecione um trecho e use a barra: <b>negrito</b>, <i>itálico</i>, cor e grifo. Sem seleção, cor e tamanho valem para o texto todo.</p>",
+  });
+  notes.push(n);
+  await save(n);
+}
+// Boot: perfil, tema, banco e notas; depois abre a primeira tela.
+(async () => {
+  loadProf();
+  try {
+    const t = localStorage.getItem("noema-theme");
+    if (t) document.documentElement.dataset.theme = t;
+  } catch (e) {}
+  try {
+    db = await openDB();
+    notes = await getAll();
+    await loadTasks();
+    await loadReminders();
+  } catch (e) {
+    db = null;
+    tasks = [];
+    reminders = [];
+  }
+  notes.forEach((n) => {
+    n.html = clean(n.html || "");
+    n.space = n.space || "";
+    if (n.dirty === undefined) n.dirty = true;
+    if (n.space && prof && prof.spaces && !prof.spaces.includes(n.space))
+      prof.spaces.push(n.space);
+  });
+  if (!notes.length && db && (!syncOn() || (prof && prof.name)))
+    await seedWelcome();
+  loadSession();
+  if (SES) {
+    startSync();
+    if (prof && prof.name) syncSoon(800);
+    else {
+      try {
+        await afterAuth();
+      } catch (e) {}
+    }
+  }
+  renderNav();
+  renderList();
+  renderEd();
+  paintProf();
+  paintSync();
+  boot();
+})();
+</script>
+  </body>
+</html>
