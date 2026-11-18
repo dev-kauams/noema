@@ -1,0 +1,10 @@
+{
+  "appId": "com.devkauams.noema",
+  "appName": "NOEMA",
+  "webDir": "dist-web",
+  "backgroundColor": "#000000",
+  "server": { "androidScheme": "https" },
+  "plugins": {
+    "FirebaseAuthentication": { "skipNativeAuth": true, "providers": ["google.com"] }
+  }
+}
